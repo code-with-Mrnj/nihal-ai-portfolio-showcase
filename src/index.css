@@ -8,35 +8,51 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 220 18% 8%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 18% 10%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 18% 10%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 45 100% 58%;
+    --primary-foreground: 220 18% 8%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 15% 15%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 100% 58%;
+    --accent-foreground: 220 18% 8%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 45 100% 58%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+    
+    /* Custom portfolio colors */
+    --portfolio-bg: 220 18% 8%;
+    --portfolio-surface: 220 18% 10%;
+    --portfolio-accent: 45 100% 58%;
+    --portfolio-text: 210 40% 98%;
+    --portfolio-text-muted: 215 20.2% 65.1%;
+    --portfolio-border: 220 15% 20%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(45 100% 58%), hsl(43 100% 50%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 18% 8%) 0%, hsl(220 20% 12%) 100%);
+    
+    /* Shadows */
+    --shadow-glow: 0 0 30px hsl(45 100% 58% / 0.2);
+    --shadow-card: 0 10px 30px -10px hsl(220 18% 5% / 0.5);
 
     --sidebar-background: 0 0% 98%;
 

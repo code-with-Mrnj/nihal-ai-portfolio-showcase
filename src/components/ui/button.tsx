@@ -18,6 +18,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        portfolio: "bg-gradient-primary text-portfolio-bg font-semibold hover:shadow-glow transition-all duration-300",
+        "portfolio-outline": "border-2 border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",
