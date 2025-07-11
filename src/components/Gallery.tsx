@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Card, CardContent } from "./ui/card";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 import { Badge } from "./ui/badge";
-import { Image, Calendar, MapPin, Users } from "lucide-react";
+import { Image, Calendar, MapPin } from "lucide-react";
 
 const galleryItems = [
   {
@@ -107,66 +106,33 @@ export function Gallery() {
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredItems.map((item) => (
-              <Dialog key={item.id}>
-                <DialogTrigger asChild>
-                  <Card className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden">
-                    <div className="aspect-video bg-portfolio-surface relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10" />
-                      <div className="absolute inset-0 flex items-center justify-center bg-portfolio-surface">
-                        <Image className="h-16 w-16 text-portfolio-text-muted" />
-                      </div>
-                      <div className="absolute bottom-4 left-4 z-20">
-                        <Badge className="bg-portfolio-accent text-portfolio-bg">
-                          {item.category}
-                        </Badge>
-                      </div>
-                    </div>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold text-portfolio-text mb-2 group-hover:text-portfolio-accent transition-colors">
-                        {item.title}
-                      </h3>
-                      <div className="flex items-center text-portfolio-text-muted text-sm mb-2">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span className="mr-4">{item.date}</span>
-                        <MapPin className="h-4 w-4 mr-1" />
-                        <span>{item.location}</span>
-                      </div>
-                      <p className="text-portfolio-text-muted text-sm line-clamp-2">
-                        {item.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </DialogTrigger>
-                <DialogContent className="max-w-2xl bg-portfolio-surface border-portfolio-border">
-                  <div className="space-y-4">
-                    <div className="aspect-video bg-portfolio-bg rounded-lg flex items-center justify-center">
-                      <Image className="h-24 w-24 text-portfolio-text-muted" />
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="text-xl font-bold text-portfolio-text">{item.title}</h3>
-                        <Badge className="bg-portfolio-accent text-portfolio-bg">
-                          {item.category}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center text-portfolio-text-muted mb-4">
-                        <Calendar className="h-4 w-4 mr-1" />
-                        <span className="mr-4">{item.date}</span>
-                        <MapPin className="h-4 w-4 mr-1" />
-                        <span>{item.location}</span>
-                      </div>
-                      <p className="text-portfolio-text-muted mb-4">{item.description}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {item.tags.map((tag, index) => (
-                          <Badge key={index} variant="outline" className="border-portfolio-accent text-portfolio-accent">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
+              <Card key={item.id} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden">
+                <div className="aspect-video bg-portfolio-surface relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-portfolio-surface">
+                    <Image className="h-16 w-16 text-portfolio-text-muted" />
                   </div>
-                </DialogContent>
-              </Dialog>
+                  <div className="absolute bottom-4 left-4 z-20">
+                    <Badge className="bg-portfolio-accent text-portfolio-bg">
+                      {item.category}
+                    </Badge>
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <h3 className="font-semibold text-portfolio-text mb-2 group-hover:text-portfolio-accent transition-colors">
+                    {item.title}
+                  </h3>
+                  <div className="flex items-center text-portfolio-text-muted text-sm mb-2">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span className="mr-4">{item.date}</span>
+                    <MapPin className="h-4 w-4 mr-1" />
+                    <span>{item.location}</span>
+                  </div>
+                  <p className="text-portfolio-text-muted text-sm line-clamp-2">
+                    {item.description}
+                  </p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>

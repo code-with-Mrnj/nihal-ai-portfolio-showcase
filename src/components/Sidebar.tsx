@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Home, User, FolderOpen, Award, Mail, Github, Linkedin, Menu, X, Instagram, Twitter, Image, BookOpen } from "lucide-react";
 import { Button } from "./ui/button";
-import { ThemeToggle } from "./ThemeToggle";
 
 const navigation = [
   { name: "HOME", href: "#home", icon: Home },
@@ -49,13 +48,8 @@ export function Sidebar({ activeSection }: SidebarProps) {
       `}>
         <div className="flex flex-col h-full p-6">
           {/* Logo/Name */}
-          <div className="mb-8 mt-8 md:mt-0">
+          <div className="mb-12 mt-8 md:mt-0">
             <h1 className="text-2xl font-bold text-portfolio-accent">NIHAL</h1>
-          </div>
-
-          {/* Theme Toggle */}
-          <div className="mb-6">
-            <ThemeToggle />
           </div>
 
           {/* Navigation */}
