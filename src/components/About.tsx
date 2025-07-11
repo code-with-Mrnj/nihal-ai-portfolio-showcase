@@ -1,6 +1,7 @@
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { GraduationCap, MapPin, Calendar } from "lucide-react";
+import nihalProfile from "../assets/nihal-profile.jpg";
 
 const skills = [
   "Python", "FastAPI", "Flask", "LangChain", "Pandas", "NumPy", "Matplotlib", 
@@ -61,7 +62,7 @@ export function About() {
             <div className="flex justify-center md:justify-end">
               <div className="relative">
                 <img
-                  src="https://drive.google.com/uc?export=view&id=1WCTJLamFVfoEGq_SSFCXfuqsHPgblvmH"
+                  src={nihalProfile}
                   alt="Nihal Jaiswal"
                   className="w-80 h-96 rounded-2xl object-cover border border-portfolio-border shadow-card"
                 />
