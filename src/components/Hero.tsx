@@ -1,25 +1,20 @@
 import { Button } from "./ui/button";
 import { Download, Mail } from "lucide-react";
-
 export function Hero() {
   const handleContactClick = () => {
     const contactSection = document.querySelector('#contact');
     if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
+      contactSection.scrollIntoView({
+        behavior: 'smooth'
+      });
     }
   };
-
-  return (
-    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-hero">
+  return <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-hero">
       <div className="container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Profile Image */}
           <div className="mb-8">
-            <img
-              src="https://postimage.me/images/2025/07/10/aka596f044d269b219.jpg"
-              alt="Nihal Jaiswal"
-              className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto border-4 border-portfolio-accent shadow-glow object-cover"
-            />
+            <img alt="Nihal Jaiswal" className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto border-4 border-portfolio-accent shadow-glow object-cover" src="/lovable-uploads/8d8b410f-0848-4750-9d22-74a861dd488b.jpg" />
           </div>
 
           {/* Greeting */}
@@ -42,25 +37,16 @@ export function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              size="lg" 
-              className="bg-gradient-primary hover:shadow-glow transition-all duration-300 font-semibold px-8 py-3"
-            >
+            <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300 font-semibold px-8 py-3">
               <Download className="mr-2 h-5 w-5" />
               Download CV
             </Button>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleContactClick}
-              className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold px-8 py-3"
-            >
+            <Button variant="outline" size="lg" onClick={handleContactClick} className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold px-8 py-3">
               <Mail className="mr-2 h-5 w-5" />
               Hire Me
             </Button>
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
