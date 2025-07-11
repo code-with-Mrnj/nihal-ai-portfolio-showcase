@@ -10,7 +10,7 @@ const certifications = [
     date: "2024",
     status: "Completed",
     description: "Comprehensive course covering data science fundamentals with advanced generative AI techniques and practical applications.",
-    link: "https://www.linkedin.com/posts/nihal-jaiswal-908b52257_datascience-generativeai-pwskills-activity-7193257387590369280-nwBv",
+    link: "https://www.linkedin.com/posts/nihal-jaiswal-908b52257_certificate-datascience-generativeai-activity-7275520296831303680-880f",
     featured: true
   },
   {
@@ -28,26 +28,17 @@ const certifications = [
     date: "2024",
     status: "Completed",
     description: "Practical data skills certification covering data analysis, visualization, and statistical methods for real-world applications.",
-    link: "https://www.linkedin.com/posts/nihal-jaiswal-908b52257_dataskills-ybifoundation-activity-7242261879013810177-aAxT",
-    featured: false
+    link: "https://www.linkedin.com/posts/nihal-jaiswal-908b52257_ai-skillsdevelopment-ybifoundation-activity-7154002058449223680-L29o",
+    featured: true
   },
   {
-    title: "RHCSA Rapid Track (RH199)",
+    title: "RHCSA Rapid Track Course (RH199)",
     provider: "Red Hat",
     date: "2024",
     status: "Completed",
     description: "Red Hat Certified System Administrator rapid track course covering Linux system administration and enterprise operations.",
     link: "https://www.linkedin.com/posts/nihal-jaiswal-908b52257_rhcsa-rapid-track-course-rh199-ver-93-activity-7251823061006458883-NWCL",
     featured: true
-  },
-  {
-    title: "AI & Prompt Engineering",
-    provider: "Self-Directed Learning",
-    date: "Ongoing",
-    status: "In Progress",
-    description: "Advanced study in artificial intelligence and prompt engineering techniques through practical projects and research.",
-    link: "https://github.com/Nihal108-bi",
-    featured: false
   }
 ];
 
