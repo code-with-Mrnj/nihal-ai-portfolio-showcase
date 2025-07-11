@@ -1,6 +1,11 @@
+
 import { Button } from "./ui/button";
 import { Download, Mail } from "lucide-react";
+import { useState } from "react";
+
 export function Hero() {
+  const [isDownloading, setIsDownloading] = useState(false);
+
   const handleContactClick = () => {
     const contactSection = document.querySelector('#contact');
     if (contactSection) {
@@ -9,7 +14,26 @@ export function Hero() {
       });
     }
   };
-  return <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-hero">
+
+  const handleDownloadCV = async () => {
+    setIsDownloading(true);
+    try {
+      const cvUrl = "https://drive.google.com/uc?export=download&id=1Dm4PI8yt8jnPXV6WSgeaiEj_QXzshduM";
+      const link = document.createElement('a');
+      link.href = cvUrl;
+      link.download = 'Nihal_Jaiswal_CV.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error('Error downloading CV:', error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return (
+    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-hero">
       <div className="container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Profile Image */}
@@ -37,9 +61,14 @@ export function Hero() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300 font-semibold px-8 py-3">
+            <Button 
+              size="lg" 
+              className="bg-gradient-primary hover:shadow-glow transition-all duration-300 font-semibold px-8 py-3"
+              onClick={handleDownloadCV}
+              disabled={isDownloading}
+            >
               <Download className="mr-2 h-5 w-5" />
-              Download CV
+              {isDownloading ? "Downloading..." : "Download CV"}
             </Button>
             <Button variant="outline" size="lg" onClick={handleContactClick} className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold px-8 py-3">
               <Mail className="mr-2 h-5 w-5" />
@@ -48,5 +77,6 @@ export function Hero() {
           </div>
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }
