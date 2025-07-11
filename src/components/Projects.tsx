@@ -5,59 +5,122 @@ import { ExternalLink, Github } from "lucide-react";
 
 const projects = [
   {
-    title: "Data Analyst Agent",
+    title: "Agrotech (Rain Prediction Model)",
+    description: "Random Forest model to forecast rainfall. Agricultural technology solution for weather prediction to help farmers make informed decisions.",
+    technologies: ["Random Forest", "Agriculture", "Machine Learning", "Python"],
+    github: "https://github.com/Nihal108-bi/agrotech",
+    featured: true
+  },
+  {
+    title: "Ask Me Anything (LangChain QA Bot)",
+    description: "LangChain-based QA on uploaded documents. Upload any document and ask questions to get intelligent answers powered by LLMs.",
+    technologies: ["LangChain", "RAG", "Python", "NLP"],
+    github: "https://github.com/Nihal108-bi/Ask-me-Anything",
+    featured: true
+  },
+  {
+    title: "Data Analyst Agent (LLM)",
     description: "LangChain + PandasAI for CSV data insights. An intelligent agent that can analyze and provide insights from CSV data using natural language processing.",
     technologies: ["LangChain", "PandasAI", "Python", "Data Analysis"],
     github: "https://github.com/Nihal108-bi/Data_Analyst_Agent",
     featured: true
   },
   {
-    title: "Sign Language Detection System",
-    description: "OpenCV + Random Forest for gesture classification. Real-time sign language detection system for Indian Sign Language (ISL) with high accuracy.",
-    technologies: ["OpenCV", "Random Forest", "Python", "Computer Vision"],
-    github: "https://github.com/Nihal108-bi/ISL-Sign-Language-Detection",
-    featured: true
-  },
-  {
-    title: "Generative AI File Q&A ChatBot",
-    description: "LangChain-based QA on uploaded documents. Upload any document and ask questions to get intelligent answers powered by LLMs.",
-    technologies: ["LangChain", "RAG", "Python", "NLP"],
-    github: "https://github.com/Nihal108-bi/File-Query-Bot-using-LangChain",
-    featured: true
-  },
-  {
-    title: "Pneumonia Detection with CNN",
-    description: "TensorFlow, Keras, TensorBoard visualizations. Deep learning model for medical image analysis to detect pneumonia from chest X-rays.",
-    technologies: ["TensorFlow", "Keras", "CNN", "Medical AI"],
-    github: "https://github.com/Nihal108-bi/Pneumonia-detection-using-CNN",
+    title: "Binance Futures Trading Bot",
+    description: "Automated trading bot for Binance futures market with risk management and strategy implementation.",
+    technologies: ["Python", "Trading", "API", "Finance"],
+    github: "https://github.com/Nihal108-bi/Binance-Futures-Trading-Bot---Python-Developer-Assignment",
     featured: false
   },
   {
-    title: "Myntra Review Sentiment Analyzer",
-    description: "NLP on product reviews. Analyze customer sentiment from Myntra product reviews using advanced natural language processing techniques.",
+    title: "Cryptocurrency Prediction Model",
+    description: "Machine learning model for predicting cryptocurrency price movements using historical data and technical indicators.",
+    technologies: ["Machine Learning", "Crypto", "Python", "Data Analysis"],
+    github: "https://github.com/Nihal108-bi/CriptoCurrancy_prediction-_model",
+    featured: false
+  },
+  {
+    title: "Cross-Lingual NLP System",
+    description: "Natural language processing system that works across multiple languages for text analysis and translation.",
+    technologies: ["NLP", "Multilingual", "Python", "AI"],
+    github: "https://github.com/Nihal108-bi/Cross-lingual-NLP-System",
+    featured: false
+  },
+  {
+    title: "Customized Chatbot for Data Science",
+    description: "Specialized chatbot designed to answer data science related questions with domain-specific knowledge.",
+    technologies: ["Chatbot", "Data Science", "NLP", "Python"],
+    github: "https://github.com/Nihal108-bi/customized-chatbot-for-datascience-related-questions",
+    featured: false
+  },
+  {
+    title: "Diamond Price Prediction",
+    description: "Machine learning model to predict diamond prices based on various characteristics and market factors.",
+    technologies: ["Machine Learning", "Regression", "Python", "Data Analysis"],
+    github: "https://github.com/Nihal108-bi/DiamondPricePrediction2",
+    featured: false
+  },
+  {
+    title: "Hate Speech Detection in Social Media",
+    description: "AI system to detect and classify hate speech in social media posts using advanced NLP techniques.",
+    technologies: ["NLP", "Classification", "Social Media", "Python"],
+    github: "https://github.com/Nihal108-bi/Hate-Speech-Detection-in-Social-Media-using-Python",
+    featured: false
+  },
+  {
+    title: "Myntra Review Sentiment Analysis",
+    description: "NLP system to analyze customer sentiment from Myntra product reviews for business insights.",
     technologies: ["NLP", "Sentiment Analysis", "Python", "Web Scraping"],
-    github: "https://github.com/Nihal108-bi/Myntra-review-sentiment",
+    github: "https://github.com/Nihal108-bi/Myntra_review",
     featured: false
   },
   {
-    title: "Agrotech Weather Predictor",
-    description: "Random Forest model to forecast rainfall. Agricultural technology solution for weather prediction to help farmers make informed decisions.",
-    technologies: ["Random Forest", "Agriculture", "Machine Learning", "Python"],
-    github: "https://github.com/Nihal108-bi/agrotech",
+    title: "NER-Powered Sports Certificate Analyzer",
+    description: "Named Entity Recognition system for analyzing and extracting information from sports certificates.",
+    technologies: ["NER", "Document Analysis", "Python", "Sports"],
+    github: "https://github.com/Nihal108-bi/NER-powered-Sports-Certificate-Analyzer",
     featured: false
   },
   {
-    title: "CalmDown Mental Wellness App",
-    description: "Music, yoga, laughter therapy + doctor booking. Comprehensive mental health platform with multiple wellness features and healthcare integration.",
-    technologies: ["Flask", "Healthcare", "UI/UX", "Wellness"],
-    github: "https://github.com/Nihal108-bi/CalmDown",
+    title: "Number Plate Detection",
+    description: "Computer vision system for automatic number plate detection and recognition using OpenCV.",
+    technologies: ["Computer Vision", "OpenCV", "Python", "Detection"],
+    github: "https://github.com/Nihal108-bi/Number-Plate-detection",
     featured: false
   },
   {
-    title: "Virtual Try-On Platform",
-    description: "Image transformation for clothing simulation. AI-powered platform that allows users to virtually try on clothes using computer vision.",
-    technologies: ["Computer Vision", "Image Processing", "AI", "Fashion Tech"],
-    github: "https://github.com/Nihal108-bi/Virtual-Tryon",
+    title: "Offline MCP Educational Server",
+    description: "Educational server implementation for offline learning and content management platform.",
+    technologies: ["Server", "Education", "Python", "Backend"],
+    github: "https://github.com/Nihal108-bi/offline-mcp-educational-server",
+    featured: false
+  },
+  {
+    title: "Pneumonia Detection using Deep Learning",
+    description: "Deep learning model for medical image analysis to detect pneumonia from chest X-rays with high accuracy.",
+    technologies: ["Deep Learning", "Medical AI", "TensorFlow", "Healthcare"],
+    github: "https://github.com/Nihal108-bi/Pneumonia-Detection_using_DL",
+    featured: false
+  },
+  {
+    title: "Sensor Fault Detection",
+    description: "Machine learning system for detecting faults and anomalies in sensor data for predictive maintenance.",
+    technologies: ["Machine Learning", "IoT", "Anomaly Detection", "Python"],
+    github: "https://github.com/Nihal108-bi/sensorfault-detection",
+    featured: false
+  },
+  {
+    title: "Sign Language Detection with Random Forest",
+    description: "Computer vision system for detecting sign language gestures using Random Forest classification.",
+    technologies: ["Computer Vision", "Random Forest", "OpenCV", "Python"],
+    github: "https://github.com/Nihal108-bi/Sign-language-detection-using-random-forest",
+    featured: false
+  },
+  {
+    title: "Soccer Player Re-identification",
+    description: "AI system for re-identifying soccer players from single video feed using computer vision techniques.",
+    technologies: ["Computer Vision", "Sports Analytics", "Video Processing", "AI"],
+    github: "https://github.com/Nihal108-bi/Soccer-Player-Re-Identification-from-Single-Video-Feed",
     featured: false
   }
 ];
