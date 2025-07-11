@@ -11,14 +11,14 @@ const contactInfo = [
   {
     icon: Mail,
     label: "Email",
-    value: "nihaljaiswal108@gmail.com",
-    href: "mailto:nihaljaiswal108@gmail.com"
+    value: "nihaljaisawal1@gmail.com",
+    href: "mailto:nihaljaisawal1@gmail.com"
   },
   {
     icon: Phone,
     label: "Phone",
-    value: "+91 9140xxxxx",
-    href: "tel:+919140xxxxx"
+    value: "+91 8303294732",
+    href: "tel:+918303294732"
   },
   {
     icon: MapPin,
@@ -176,7 +176,7 @@ export function Contact() {
                   className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
                   asChild
                 >
-                  <a href="mailto:nihaljaiswal108@gmail.com">
+                  <a href="mailto:nihaljaisawal1@gmail.com">
                     <Mail className="h-4 w-4 mr-2" />
                     Send Email
                   </a>
