@@ -5,6 +5,7 @@ import { Textarea } from "./ui/textarea";
 import { Mail, Phone, MapPin, Github, Linkedin, Send } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import emailjs from '@emailjs/browser';
 
 const contactInfo = [
   {
@@ -44,11 +45,11 @@ const socialLinks = [
 
 export function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
+    user_name: '',
+    user_email: '',
     message: ''
   });
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -59,32 +60,41 @@ export function Contact() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     
-    // Create mailto link with form data
-    const subject = encodeURIComponent(formData.subject || 'Portfolio Contact');
-    const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-    );
-    const mailtoLink = `mailto:nihaljaiswal108@gmail.com?subject=${subject}&body=${body}`;
-    
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    // Show success toast
-    toast({
-      title: "Email client opened!",
-      description: "Your default email client should open with the pre-filled message.",
-    });
-    
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      subject: '',
-      message: ''
-    });
+    try {
+      const result = await emailjs.send(
+        'service_hclbwdf',
+        'template_0f4q2e2',
+        formData,
+        'VWJX_TjSp1oqoAtAr'
+      );
+
+      if (result.status === 200) {
+        toast({
+          title: "Message sent successfully!",
+          description: "Your message has been sent! I'll get back to you soon.",
+        });
+        
+        // Reset form
+        setFormData({
+          user_name: '',
+          user_email: '',
+          message: ''
+        });
+      }
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      toast({
+        title: "Failed to send message",
+        description: "Something went wrong. Please try again or contact me directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -182,48 +192,36 @@ export function Contact() {
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="name" className="block text-sm font-medium text-portfolio-text mb-2">
+                        <label htmlFor="user_name" className="block text-sm font-medium text-portfolio-text mb-2">
                           Name *
                         </label>
                         <Input
-                          id="name"
-                          name="name"
-                          value={formData.name}
+                          id="user_name"
+                          name="user_name"
+                          value={formData.user_name}
                           onChange={handleInputChange}
                           required
+                          disabled={isLoading}
                           className="bg-portfolio-surface border-portfolio-border focus:border-portfolio-accent"
                           placeholder="Your full name"
                         />
                       </div>
                       <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-portfolio-text mb-2">
+                        <label htmlFor="user_email" className="block text-sm font-medium text-portfolio-text mb-2">
                           Email *
                         </label>
                         <Input
-                          id="email"
-                          name="email"
+                          id="user_email"
+                          name="user_email"
                           type="email"
-                          value={formData.email}
+                          value={formData.user_email}
                           onChange={handleInputChange}
                           required
+                          disabled={isLoading}
                           className="bg-portfolio-surface border-portfolio-border focus:border-portfolio-accent"
                           placeholder="your.email@example.com"
                         />
                       </div>
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="subject" className="block text-sm font-medium text-portfolio-text mb-2">
-                        Subject
-                      </label>
-                      <Input
-                        id="subject"
-                        name="subject"
-                        value={formData.subject}
-                        onChange={handleInputChange}
-                        className="bg-portfolio-surface border-portfolio-border focus:border-portfolio-accent"
-                        placeholder="What's this about?"
-                      />
                     </div>
                     
                     <div>
@@ -237,6 +235,7 @@ export function Contact() {
                         onChange={handleInputChange}
                         required
                         rows={6}
+                        disabled={isLoading}
                         className="bg-portfolio-surface border-portfolio-border focus:border-portfolio-accent resize-none"
                         placeholder="Tell me about your project, idea, or just say hello!"
                       />
@@ -246,14 +245,15 @@ export function Contact() {
                       type="submit" 
                       className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
                       size="lg"
+                      disabled={isLoading}
                     >
                       <Send className="h-5 w-5 mr-2" />
-                      Send Message
+                      {isLoading ? "Sending..." : "Send Message"}
                     </Button>
                   </form>
                   
                   <p className="text-sm text-portfolio-text-muted mt-4 text-center">
-                    This will open your email client with a pre-filled message.
+                    Your message will be sent directly to my email.
                   </p>
                 </CardContent>
               </Card>
