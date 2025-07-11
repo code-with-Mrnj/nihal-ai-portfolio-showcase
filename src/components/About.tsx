@@ -61,7 +61,7 @@ export function About() {
             <div className="flex justify-center md:justify-end">
               <div className="relative">
                 <img
-                  src="https://postimage.me/images/2025/07/10/aka596f044d269b219.jpg"
+                  src="https://drive.google.com/uc?export=view&id=1WCTJLamFVfoEGq_SSFCXfuqsHPgblvmH"
                   alt="Nihal Jaiswal"
                   className="w-80 h-96 rounded-2xl object-cover border border-portfolio-border shadow-card"
                 />
