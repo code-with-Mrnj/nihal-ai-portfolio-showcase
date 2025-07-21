@@ -47,6 +47,7 @@ export function Contact() {
   const [formData, setFormData] = useState({
     user_name: '',
     user_email: '',
+    subject: '',
     message: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -82,6 +83,7 @@ export function Contact() {
         setFormData({
           user_name: '',
           user_email: '',
+          subject: '',
           message: ''
         });
       }
@@ -222,9 +224,25 @@ export function Contact() {
                           placeholder="your.email@example.com"
                         />
                       </div>
-                    </div>
-                    
-                    <div>
+                     </div>
+                     
+                     <div>
+                       <label htmlFor="subject" className="block text-sm font-medium text-portfolio-text mb-2">
+                         Subject *
+                       </label>
+                       <Input
+                         id="subject"
+                         name="subject"
+                         value={formData.subject}
+                         onChange={handleInputChange}
+                         required
+                         disabled={isLoading}
+                         className="bg-portfolio-surface border-portfolio-border focus:border-portfolio-accent"
+                         placeholder="What's this about?"
+                       />
+                     </div>
+                     
+                     <div>
                       <label htmlFor="message" className="block text-sm font-medium text-portfolio-text mb-2">
                         Message *
                       </label>
