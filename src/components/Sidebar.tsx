@@ -137,8 +137,8 @@ export function Sidebar({ activeSection }: SidebarProps) {
                 </svg>
               </a>
             </div>
-            <p className="text-sm text-portfolio-text-muted">
-              © 2024 Nihal Jaiswal
+            <p className="text-sm text-portfolio-text-muted font-medium tracking-wide">
+              ✨ © 2025 Nihal Jaiswal ✨
             </p>
           </div>
         </div>
