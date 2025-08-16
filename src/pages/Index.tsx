@@ -52,6 +52,13 @@ const Index = () => {
         <Blog />
         <Contact />
       </main>
+
+      {/* ElevenLabs ConvAI Widget */}
+      <div 
+        dangerouslySetInnerHTML={{
+          __html: '<elevenlabs-convai agent-id="agent_4201k2rdqmmje26bb3eyqp0707dj"></elevenlabs-convai>'
+        }}
+      />
     </div>
   );
 };
