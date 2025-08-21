@@ -56,7 +56,7 @@ const Index = () => {
       {/* ElevenLabs ConvAI Widget */}
       <div 
         dangerouslySetInnerHTML={{
-          __html: '<elevenlabs-convai agent-id="agent_4201k2rdqmmje26bb3eyqp0707dj"></elevenlabs-convai>'
+          __html: '<elevenlabs-convai agent-id="agent_9001k36j0yxwfc29wdfss5wv58fa"></elevenlabs-convai>'
         }}
       />
     </div>
