@@ -18,7 +18,7 @@ export function Hero() {
   const handleDownloadCV = async () => {
     setIsDownloading(true);
     try {
-      const cvUrl = "https://drive.google.com/uc?export=download&id=1Dm4PI8yt8jnPXV6WSgeaiEj_QXzshduM";
+      const cvUrl = "https://drive.google.com/uc?export=download&id=1t00Hoh9e6xwZpQ4zCasIio0pUdCrrenI";
       const link = document.createElement('a');
       link.href = cvUrl;
       link.download = 'Nihal_Jaiswal_CV.pdf';
