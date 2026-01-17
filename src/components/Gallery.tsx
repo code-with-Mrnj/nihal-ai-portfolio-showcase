@@ -1,78 +1,82 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Image, Calendar, MapPin } from "lucide-react";
 
-const galleryItems = [
+interface GalleryItem {
+  id: string;
+  title: string;
+  category: string;
+  date: string;
+  location: string;
+  description: string;
+  image_url: string;
+  tags: string[];
+  display_order: number;
+}
+
+// Fallback items for when database is empty
+const fallbackItems: GalleryItem[] = [
   {
-    id: 1,
+    id: "1",
     title: "AI/ML Hackathon Winner",
     category: "Hackathon",
     date: "2024",
     location: "Tech Conference Delhi",
     description: "First place in AI/ML hackathon with innovative cryptocurrency prediction model",
-    image: "/placeholder.svg",
-    tags: ["AI", "Machine Learning", "Winner"]
+    image_url: "/placeholder.svg",
+    tags: ["AI", "Machine Learning", "Winner"],
+    display_order: 0
   },
   {
-    id: 2,
+    id: "2",
     title: "Data Science Project Showcase",
     category: "Project",
     date: "2024",
     location: "University Campus",
     description: "Presenting diamond price prediction model at university tech expo",
-    image: "/placeholder.svg",
-    tags: ["Data Science", "Presentation", "University"]
+    image_url: "/placeholder.svg",
+    tags: ["Data Science", "Presentation", "University"],
+    display_order: 1
   },
   {
-    id: 3,
+    id: "3",
     title: "Tech Team Collaboration",
     category: "Team",
     date: "2024",
     location: "Remote",
     description: "Working with development team on cross-lingual NLP system",
-    image: "/placeholder.svg",
-    tags: ["NLP", "Team Work", "Development"]
-  },
-  {
-    id: 4,
-    title: "Certificate Achievement",
-    category: "Achievement",
-    date: "2024",
-    location: "Online",
-    description: "Receiving Data Science with Generative AI certification from PW Skills",
-    image: "/placeholder.svg",
-    tags: ["Certificate", "Learning", "Achievement"]
-  },
-  {
-    id: 5,
-    title: "Open Source Contribution",
-    category: "Project",
-    date: "2024",
-    location: "GitHub",
-    description: "Contributing to open source projects in AI and machine learning",
-    image: "/placeholder.svg",
-    tags: ["Open Source", "GitHub", "Contribution"]
-  },
-  {
-    id: 6,
-    title: "Tech Workshop Participation",
-    category: "Learning",
-    date: "2024",
-    location: "Tech Hub",
-    description: "Attending advanced machine learning workshop with industry experts",
-    image: "/placeholder.svg",
-    tags: ["Workshop", "Learning", "Networking"]
+    image_url: "/placeholder.svg",
+    tags: ["NLP", "Team Work", "Development"],
+    display_order: 2
   }
 ];
 
 export function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const categories = ["All", "Hackathon", "Project", "Team", "Achievement", "Learning"];
+
+  const { data: galleryItems = [], isLoading } = useQuery({
+    queryKey: ["gallery-items"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("gallery_items")
+        .select("*")
+        .order("display_order", { ascending: true });
+      
+      if (error) throw error;
+      return data as GalleryItem[];
+    },
+  });
+
+  // Use fallback items if database is empty
+  const displayItems = galleryItems.length > 0 ? galleryItems : fallbackItems;
+  const categories = ["All", "Hackathon", "Project", "Team", "Achievement", "Learning", "Event"];
 
   const filteredItems = selectedCategory === "All" 
-    ? galleryItems 
-    : galleryItems.filter(item => item.category === selectedCategory);
+    ? displayItems 
+    : displayItems.filter(item => item.category === selectedCategory);
 
   return (
     <section id="gallery" className="py-20 bg-portfolio-surface">
@@ -103,15 +107,30 @@ export function Gallery() {
             ))}
           </div>
 
+          {/* Loading State */}
+          {isLoading && (
+            <div className="text-center text-portfolio-text-muted py-12">
+              Loading gallery...
+            </div>
+          )}
+
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredItems.map((item) => (
               <Card key={item.id} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden">
                 <div className="aspect-video bg-portfolio-surface relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10" />
-                  <div className="absolute inset-0 flex items-center justify-center bg-portfolio-surface">
-                    <Image className="h-16 w-16 text-portfolio-text-muted" />
-                  </div>
+                  {item.image_url && item.image_url !== "/placeholder.svg" ? (
+                    <img 
+                      src={item.image_url} 
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center bg-portfolio-surface">
+                      <Image className="h-16 w-16 text-portfolio-text-muted" />
+                    </div>
+                  )}
                   <div className="absolute bottom-4 left-4 z-20">
                     <Badge className="bg-portfolio-accent text-portfolio-bg">
                       {item.category}
@@ -135,6 +154,13 @@ export function Gallery() {
               </Card>
             ))}
           </div>
+
+          {/* Empty state */}
+          {!isLoading && filteredItems.length === 0 && (
+            <div className="text-center text-portfolio-text-muted py-12">
+              No items in this category yet.
+            </div>
+          )}
         </div>
       </div>
     </section>
