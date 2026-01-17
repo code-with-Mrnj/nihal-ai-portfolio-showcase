@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { ExternalLink, Github } from "lucide-react";
+import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSection";
 
 const projects = [
   {
@@ -133,19 +134,23 @@ export function Projects() {
     <section id="projects" className="py-20 bg-portfolio-surface">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-            My <span className="text-portfolio-accent">Portfolio</span>
-          </h2>
-          <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
-            Explore my collection of AI/ML projects, from data analysis agents to computer vision applications.
-            Each project demonstrates practical applications of cutting-edge technologies.
-          </p>
+          <AnimatedSection>
+            <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
+              My <span className="text-portfolio-accent">Portfolio</span>
+            </h2>
+            <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
+              Explore my collection of AI/ML projects, from data analysis agents to computer vision applications.
+              Each project demonstrates practical applications of cutting-edge technologies.
+            </p>
+          </AnimatedSection>
 
           {/* Featured Projects */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold text-portfolio-text mb-8">Featured Projects</h3>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProjects.map((project, index) => (
+          <AnimatedSection delay={0.1}>
+            <div className="mb-16">
+              <h3 className="text-2xl font-bold text-portfolio-text mb-8">Featured Projects</h3>
+              <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProjects.map((project, index) => (
+                  <StaggerItem key={index}>
                 <Card key={index} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow group">
                   <CardHeader>
                     <CardTitle className="text-portfolio-text group-hover:text-portfolio-accent transition-colors">
@@ -192,63 +197,71 @@ export function Projects() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
             </div>
-          </div>
+          </AnimatedSection>
 
           {/* Other Projects */}
-          <div>
-            <h3 className="text-2xl font-bold text-portfolio-text mb-8">Other Projects</h3>
-            <div className="grid md:grid-cols-2 gap-6">
-              {otherProjects.map((project, index) => (
-                <Card key={index} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300">
-                  <CardContent className="p-6">
-                    <div className="flex justify-between items-start mb-3">
-                      <h4 className="text-lg font-semibold text-portfolio-text">{project.title}</h4>
-                      <a 
-                        href={project.github} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-portfolio-text-muted hover:text-portfolio-accent transition-colors"
-                      >
-                        <Github className="h-5 w-5" />
-                      </a>
-                    </div>
-                    <p className="text-portfolio-text-muted mb-3 text-sm leading-relaxed">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {project.technologies.map((tech, techIndex) => (
-                        <Badge 
-                          key={techIndex} 
-                          variant="secondary" 
-                          className="text-xs bg-portfolio-surface border border-portfolio-border"
-                        >
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+          <AnimatedSection delay={0.2}>
+            <div>
+              <h3 className="text-2xl font-bold text-portfolio-text mb-8">Other Projects</h3>
+              <StaggerContainer className="grid md:grid-cols-2 gap-6">
+                {otherProjects.map((project, index) => (
+                  <StaggerItem key={index}>
+                    <Card className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300">
+                      <CardContent className="p-6">
+                        <div className="flex justify-between items-start mb-3">
+                          <h4 className="text-lg font-semibold text-portfolio-text">{project.title}</h4>
+                          <a 
+                            href={project.github} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-portfolio-text-muted hover:text-portfolio-accent transition-colors"
+                          >
+                            <Github className="h-5 w-5" />
+                          </a>
+                        </div>
+                        <p className="text-portfolio-text-muted mb-3 text-sm leading-relaxed">
+                          {project.description}
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                          {project.technologies.map((tech, techIndex) => (
+                            <Badge 
+                              key={techIndex} 
+                              variant="secondary" 
+                              className="text-xs bg-portfolio-surface border border-portfolio-border"
+                            >
+                              {tech}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </StaggerItem>
+                ))}
+              </StaggerContainer>
             </div>
-          </div>
+          </AnimatedSection>
 
           {/* GitHub CTA */}
-          <div className="text-center mt-12">
-            <p className="text-portfolio-text-muted mb-4">Want to see more of my work?</p>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300"
-              asChild
-            >
-              <a href="https://github.com/Nihal108-bi" target="_blank" rel="noopener noreferrer">
-                <Github className="h-5 w-5 mr-2" />
-                View All Projects on GitHub
-              </a>
-            </Button>
-          </div>
+          <AnimatedSection delay={0.3}>
+            <div className="text-center mt-12">
+              <p className="text-portfolio-text-muted mb-4">Want to see more of my work?</p>
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300"
+                asChild
+              >
+                <a href="https://github.com/Nihal108-bi" target="_blank" rel="noopener noreferrer">
+                  <Github className="h-5 w-5 mr-2" />
+                  View All Projects on GitHub
+                </a>
+              </Button>
+            </div>
+          </AnimatedSection>
         </div>
       </div>
     </section>
