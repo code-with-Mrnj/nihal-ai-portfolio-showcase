@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Home, User, FolderOpen, Award, Mail, Github, Linkedin, Menu, X, Instagram, Twitter, Image, BookOpen } from "lucide-react";
+import { Home, User, FolderOpen, Award, Mail, Github, Linkedin, Menu, X, Instagram, Twitter, Image, BookOpen, LogIn, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-
+import { useAuth } from "@/hooks/useAuth";
 const navigation = [
   { name: "HOME", href: "#home", icon: Home },
   { name: "ABOUT ME", href: "#about", icon: User },
@@ -18,6 +19,7 @@ interface SidebarProps {
 
 export function Sidebar({ activeSection }: SidebarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const handleNavClick = (href: string) => {
     const element = document.querySelector(href);
@@ -74,6 +76,30 @@ export function Sidebar({ activeSection }: SidebarProps) {
               ))}
             </ul>
           </nav>
+
+          {/* Auth Button */}
+          <div className="mb-4">
+            {user ? (
+              <Button
+                variant="outline"
+                className="w-full flex items-center justify-center gap-2 border-portfolio-border hover:bg-portfolio-bg hover:text-portfolio-accent"
+                onClick={() => signOut()}
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </Button>
+            ) : (
+              <Link to="/auth">
+                <Button
+                  variant="outline"
+                  className="w-full flex items-center justify-center gap-2 border-portfolio-border hover:bg-portfolio-bg hover:text-portfolio-accent"
+                >
+                  <LogIn className="h-4 w-4" />
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </div>
 
           {/* Social Links */}
           <div className="mt-auto pt-6">
