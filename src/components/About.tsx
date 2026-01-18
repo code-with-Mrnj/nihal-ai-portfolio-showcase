@@ -3,38 +3,26 @@ import { Badge } from "./ui/badge";
 import { GraduationCap, MapPin, Calendar } from "lucide-react";
 import nihalProfile from "../assets/nihal-profile.jpg";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSection";
-
-const skills = [
-  "Python", "FastAPI", "Flask", "LangChain", "Pandas", "NumPy", "Matplotlib", 
-  "OpenCV", "TensorFlow", "Keras", "MongoDB", "GitHub", "Streamlit", 
-  "HuggingFace", "Prompt Engineering", "SQL", "Linux CLI"
-];
-
-const education = [
-  {
-    institution: "Rajkiya Engineering College, Banda",
-    degree: "B.Tech – Information Technology",
-    period: "2022–2026",
-    grade: "CGPA: 6.8",
-    website: "https://recbanda.ac.in/"
-  },
-  {
-    institution: "TN Inter College, Ghazipur (UP Board)",
-    degree: "Senior Secondary (XII) – Science",
-    period: "2021",
-    grade: "Percentage: 81%"
-  },
-  {
-    institution: "TN Inter College, Ghazipur (UP Board)",
-    degree: "Secondary (X) – All Subjects",
-    period: "2019",
-    grade: "Percentage: 87%"
-  }
-];
-
+const skills = ["Python", "FastAPI", "Flask", "LangChain", "Pandas", "NumPy", "Matplotlib", "OpenCV", "TensorFlow", "Keras", "MongoDB", "GitHub", "Streamlit", "HuggingFace", "Prompt Engineering", "SQL", "Linux CLI"];
+const education = [{
+  institution: "Rajkiya Engineering College, Banda",
+  degree: "B.Tech – Information Technology",
+  period: "2022–2026",
+  grade: "CGPA: 6.8",
+  website: "https://recbanda.ac.in/"
+}, {
+  institution: "TN Inter College, Ghazipur (UP Board)",
+  degree: "Senior Secondary (XII) – Science",
+  period: "2021",
+  grade: "Percentage: 81%"
+}, {
+  institution: "TN Inter College, Ghazipur (UP Board)",
+  degree: "Secondary (X) – All Subjects",
+  period: "2019",
+  grade: "Percentage: 87%"
+}];
 export function About() {
-  return (
-    <section id="about" className="py-20 relative">
+  return <section id="about" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
@@ -67,11 +55,7 @@ export function About() {
             <AnimatedSection delay={0.2}>
               <div className="flex justify-center md:justify-end">
                 <div className="relative">
-                  <img
-                    src={nihalProfile}
-                    alt="Nihal Jaiswal"
-                    className="w-80 h-96 rounded-2xl object-cover border border-portfolio-border shadow-card"
-                  />
+                  <img src={nihalProfile} alt="Nihal Jaiswal" className="w-80 h-96 rounded-2xl object-cover border border-portfolio-border shadow-card" />
                   <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/20 to-transparent rounded-2xl"></div>
                 </div>
               </div>
@@ -81,18 +65,11 @@ export function About() {
           {/* Skills */}
           <AnimatedSection delay={0.3}>
             <div className="mb-16">
-              <h3 className="text-2xl font-bold text-portfolio-text mb-6">Skills & Technologies</h3>
+              
               <StaggerContainer className="flex flex-wrap gap-3">
-                {skills.map((skill, index) => (
-                  <StaggerItem key={index}>
-                    <Badge 
-                      variant="secondary" 
-                      className="px-4 py-2 text-sm font-medium bg-portfolio-surface border border-portfolio-border hover:border-portfolio-accent transition-colors"
-                    >
-                      {skill}
-                    </Badge>
-                  </StaggerItem>
-                ))}
+                {skills.map((skill, index) => <StaggerItem key={index}>
+                    
+                  </StaggerItem>)}
               </StaggerContainer>
             </div>
           </AnimatedSection>
@@ -102,8 +79,7 @@ export function About() {
             <div>
               <h3 className="text-2xl font-bold text-portfolio-text mb-6">Education</h3>
               <StaggerContainer className="space-y-6">
-                {education.map((edu, index) => (
-                  <StaggerItem key={index}>
+                {education.map((edu, index) => <StaggerItem key={index}>
                     <Card className="bg-portfolio-surface border-portfolio-border hover:border-portfolio-accent transition-colors">
                       <CardContent className="p-6">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
@@ -119,26 +95,17 @@ export function About() {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-portfolio-text-muted">{edu.grade}</span>
-                          {edu.website && (
-                            <a 
-                              href={edu.website} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="text-portfolio-accent hover:underline text-sm"
-                            >
+                          {edu.website && <a href={edu.website} target="_blank" rel="noopener noreferrer" className="text-portfolio-accent hover:underline text-sm">
                               Visit Website
-                            </a>
-                          )}
+                            </a>}
                         </div>
                       </CardContent>
                     </Card>
-                  </StaggerItem>
-                ))}
+                  </StaggerItem>)}
               </StaggerContainer>
             </div>
           </AnimatedSection>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 }
