@@ -37,12 +37,12 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
     const allConnections: Connection[] = [];
     
     // Create multiple neural network "blocks" vertically
-    const networkBlocks = 4;
-    const layersPerBlock = 6;
-    const nodesPerLayer = [4, 8, 12, 12, 8, 4]; // Diamond shape per block
+    const networkBlocks = 8; // Increased from 4 for denser network
+    const layersPerBlock = 8; // Increased from 6 for more layers
+    const nodesPerLayer = [5, 10, 16, 20, 20, 16, 10, 5]; // Larger diamond shape
     
     for (let block = 0; block < networkBlocks; block++) {
-      const blockOffsetY = block * 25; // Each block takes 25% of height
+      const blockOffsetY = block * 12.5; // Each block takes 12.5% of height (100/8)
       
       for (let layerIdx = 0; layerIdx < layersPerBlock; layerIdx++) {
         const nodeCount = nodesPerLayer[layerIdx];
@@ -50,7 +50,7 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
         
         for (let nodeIdx = 0; nodeIdx < nodeCount; nodeIdx++) {
           const depthLayer = Math.floor(Math.random() * 3);
-          const verticalSpread = 20; // How much vertical space each layer takes
+          const verticalSpread = 10; // Reduced for tighter packing with more blocks
           const nodeY = blockOffsetY + 2 + (nodeIdx / Math.max(nodeCount - 1, 1)) * verticalSpread;
           
           // Add some randomness for organic feel
@@ -115,9 +115,9 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
         });
       }
       
-      // Add some skip connections (residual-like)
+      // Add more skip connections (residual-like)
       if (block < networkBlocks) {
-        const skipCount = 3;
+        const skipCount = 6; // Increased from 3 for denser connections
         for (let s = 0; s < skipCount; s++) {
           const fromLayerIdx = Math.floor(Math.random() * (layersPerBlock - 2));
           const toLayerIdx = fromLayerIdx + 2 + Math.floor(Math.random() * 2);
