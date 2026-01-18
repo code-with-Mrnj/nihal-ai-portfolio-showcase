@@ -55,7 +55,10 @@ export function Hero() {
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Video Background Layer */}
+      {/* Fallback gradient - lowest layer */}
+      <div className="absolute inset-0 bg-gradient-hero" style={{ zIndex: 0 }} />
+
+      {/* Video Background Layer - above fallback */}
       {!prefersReducedMotion && (
         <video
           autoPlay
@@ -63,8 +66,8 @@ export function Hero() {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          style={{ filter: 'brightness(0.7)' }}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 1, filter: 'brightness(0.7)' }}
           onError={(e) => {
             console.error('Video failed to load:', e);
           }}
@@ -74,19 +77,17 @@ export function Hero() {
         </video>
       )}
 
-      {/* Dark Overlay - Adjustable opacity (currently 0.5) */}
+      {/* Dark Overlay - above video */}
       <div 
-        className="absolute inset-0 z-10 bg-portfolio-bg/50"
+        className="absolute inset-0"
         style={{
+          zIndex: 2,
           background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)'
         }}
       />
 
-      {/* Fallback gradient for reduced motion or if video fails */}
-      <div className="absolute inset-0 z-0 bg-gradient-hero" />
-
-      {/* Content Layer */}
-      <div className="relative z-20 container mx-auto px-6 py-20 text-center">
+      {/* Content Layer - topmost */}
+      <div className="relative container mx-auto px-6 py-20 text-center" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto">
           {/* Profile Image */}
           <motion.div
