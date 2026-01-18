@@ -5,7 +5,14 @@ import { useRef } from "react";
 import { Download, FileText, ExternalLink, ChevronDown, ChevronUp, GraduationCap, Briefcase, Award, Code, Cloud } from "lucide-react";
 import { Button } from "./ui/button";
 import { AnimatedSection } from "./AnimatedSection";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+
 interface TimelineEvent {
   id: number;
   year: string;
@@ -15,95 +22,93 @@ interface TimelineEvent {
   icon: "education" | "work" | "certification" | "project";
   color: string;
 }
-const timelineEvents: TimelineEvent[] = [{
-  id: 1,
-  year: "2022",
-  title: "Started B.Tech in Information Technology",
-  subtitle: "Rajkiya Engineering College, Banda",
-  description: "Began my undergraduate journey specializing in IT with focus on AI/ML",
-  icon: "education",
-  color: "from-blue-500 to-cyan-500"
-}, {
-  id: 2,
-  year: "2023",
-  title: "Data Science Trainee",
-  subtitle: "PW Skills",
-  description: "Completed intensive training in ML, Deep Learning, NLP with 10+ hands-on projects",
-  icon: "work",
-  color: "from-green-500 to-emerald-500"
-}, {
-  id: 3,
-  year: "2024",
-  title: "Multiple Certifications Earned",
-  subtitle: "Microsoft, Red Hat, PW Skills",
-  description: "Data Science with Generative AI, RHCSA, IR4.0 Foundation certifications",
-  icon: "certification",
-  color: "from-purple-500 to-pink-500"
-}, {
-  id: 4,
-  year: "2025",
-  title: "AI & Automation Intern",
-  subtitle: "Mirai School",
-  description: "Designed AI-driven learning tools, automating 80% of student Q&A interactions",
-  icon: "work",
-  color: "from-yellow-500 to-orange-500"
-}, {
-  id: 5,
-  year: "2025",
-  title: "AI Engineering Intern",
-  subtitle: "Meghaminds IT Services",
-  description: "Built student performance prediction system with 99.23% accuracy",
-  icon: "work",
-  color: "from-red-500 to-pink-500"
-}, {
-  id: 6,
-  year: "2026",
-  title: "B.Tech Graduation (Expected)",
-  subtitle: "Rajkiya Engineering College, Banda",
-  description: "Completing degree with expertise in AI, ML, and Data Science",
-  icon: "education",
-  color: "from-cyan-500 to-blue-500"
-}];
+
+const timelineEvents: TimelineEvent[] = [
+  {
+    id: 1,
+    year: "2022",
+    title: "Started B.Tech in Information Technology",
+    subtitle: "Rajkiya Engineering College, Banda",
+    description: "Began my undergraduate journey specializing in IT with focus on AI/ML",
+    icon: "education",
+    color: "from-blue-500 to-cyan-500",
+  },
+  {
+    id: 2,
+    year: "2023",
+    title: "Data Science Trainee",
+    subtitle: "PW Skills",
+    description: "Completed intensive training in ML, Deep Learning, NLP with 10+ hands-on projects",
+    icon: "work",
+    color: "from-green-500 to-emerald-500",
+  },
+  {
+    id: 3,
+    year: "2024",
+    title: "Multiple Certifications Earned",
+    subtitle: "Microsoft, Red Hat, PW Skills",
+    description: "Data Science with Generative AI, RHCSA, IR4.0 Foundation certifications",
+    icon: "certification",
+    color: "from-purple-500 to-pink-500",
+  },
+  {
+    id: 4,
+    year: "2025",
+    title: "AI & Automation Intern",
+    subtitle: "Mirai School",
+    description: "Designed AI-driven learning tools, automating 80% of student Q&A interactions",
+    icon: "work",
+    color: "from-yellow-500 to-orange-500",
+  },
+  {
+    id: 5,
+    year: "2025",
+    title: "AI Engineering Intern",
+    subtitle: "Meghaminds IT Services",
+    description: "Built student performance prediction system with 99.23% accuracy",
+    icon: "work",
+    color: "from-red-500 to-pink-500",
+  },
+  {
+    id: 6,
+    year: "2026",
+    title: "B.Tech Graduation (Expected)",
+    subtitle: "Rajkiya Engineering College, Banda",
+    description: "Completing degree with expertise in AI, ML, and Data Science",
+    icon: "education",
+    color: "from-cyan-500 to-blue-500",
+  },
+];
+
 const iconMap = {
   education: GraduationCap,
   work: Briefcase,
   certification: Award,
-  project: Code
+  project: Code,
 };
-function TimelineItem({
-  event,
-  index
-}: {
-  event: TimelineEvent;
-  index: number;
-}) {
+
+function TimelineItem({ event, index }: { event: TimelineEvent; index: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "-50px"
-  });
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
   const Icon = iconMap[event.icon];
   const isLeft = index % 2 === 0;
-  return <motion.div ref={ref} initial={{
-    opacity: 0,
-    x: isLeft ? -50 : 50
-  }} animate={isInView ? {
-    opacity: 1,
-    x: 0
-  } : {}} transition={{
-    duration: 0.6,
-    delay: index * 0.1
-  }} className={`relative flex items-center mb-8 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}>
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, x: isLeft ? -50 : 50 }}
+      animate={isInView ? { opacity: 1, x: 0 } : {}}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      className={`relative flex items-center mb-8 ${isLeft ? "md:flex-row" : "md:flex-row-reverse"}`}
+    >
       {/* Timeline dot */}
       <div className="absolute left-0 md:left-1/2 transform -translate-x-1/2 z-10">
-        <motion.div initial={{
-        scale: 0
-      }} animate={isInView ? {
-        scale: 1
-      } : {}} transition={{
-        duration: 0.4,
-        delay: index * 0.1 + 0.2
-      }} className={`w-12 h-12 rounded-full bg-gradient-to-br ${event.color} flex items-center justify-center shadow-lg`}>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={isInView ? { scale: 1 } : {}}
+          transition={{ duration: 0.4, delay: index * 0.1 + 0.2 }}
+          className={`w-12 h-12 rounded-full bg-gradient-to-br ${event.color} flex items-center justify-center shadow-lg`}
+        >
           <Icon className="w-5 h-5 text-white" />
         </motion.div>
       </div>
@@ -117,16 +122,17 @@ function TimelineItem({
           <p className="text-portfolio-text-muted text-sm mt-2">{event.description}</p>
         </div>
       </div>
-    </motion.div>;
+    </motion.div>
+  );
 }
+
 export function ResumeViewer() {
   const [isExpanded, setIsExpanded] = useState(false);
   const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, {
-    once: true,
-    margin: "-100px"
-  });
-  return <section id="resume" className="py-20 relative">
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+
+  return (
+    <section id="resume" className="py-20 relative">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="text-center mb-12">
@@ -141,7 +147,10 @@ export function ResumeViewer() {
             <div className="flex flex-wrap justify-center gap-4 mb-12">
               <Dialog>
                 <DialogTrigger asChild>
-                  
+                  <Button className="bg-portfolio-accent hover:bg-portfolio-accent/90 text-portfolio-bg gap-2">
+                    <FileText className="w-4 h-4" />
+                    View Resume
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="max-w-4xl h-[85vh] bg-portfolio-surface border-portfolio-border">
                   <DialogHeader>
@@ -151,21 +160,34 @@ export function ResumeViewer() {
                     </DialogTitle>
                   </DialogHeader>
                   <div className="flex-1 h-full min-h-0">
-                    <iframe src="/resume/NihalJaiswal_DS.pdf#toolbar=1&navpanes=0" className="w-full h-[calc(85vh-80px)] rounded-lg border border-portfolio-border" title="Resume PDF" sandbox="allow-same-origin allow-scripts allow-forms" />
+                    <iframe
+                      src="/resume/NihalJaiswal_DS.pdf#toolbar=1&navpanes=0"
+                      className="w-full h-[calc(85vh-80px)] rounded-lg border border-portfolio-border"
+                      title="Resume PDF"
+                      sandbox="allow-same-origin allow-scripts allow-forms"
+                    />
                   </div>
                   <div className="flex justify-end gap-3 mt-4">
-                    <Button variant="outline" className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2" onClick={() => {
-                    const link = document.createElement('a');
-                    link.href = '/resume/NihalJaiswal_DS.pdf';
-                    link.download = 'Nihal_Jaiswal_Resume.pdf';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                  }}>
+                    <Button
+                      variant="outline"
+                      className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2"
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = '/resume/NihalJaiswal_DS.pdf';
+                        link.download = 'Nihal_Jaiswal_Resume.pdf';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                    >
                       <Download className="w-4 h-4" />
                       Download
                     </Button>
-                    <Button variant="outline" className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2" onClick={() => window.open('/resume/NihalJaiswal_DS.pdf', '_blank', 'noopener,noreferrer')}>
+                    <Button
+                      variant="outline"
+                      className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2"
+                      onClick={() => window.open('/resume/NihalJaiswal_DS.pdf', '_blank', 'noopener,noreferrer')}
+                    >
                       <ExternalLink className="w-4 h-4" />
                       Open in New Tab
                     </Button>
@@ -173,21 +195,36 @@ export function ResumeViewer() {
                 </DialogContent>
               </Dialog>
 
-              <Button variant="outline" className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2" onClick={() => {
-              const link = document.createElement('a');
-              link.href = '/resume/NihalJaiswal_DS.pdf';
-              link.download = 'Nihal_Jaiswal_Resume.pdf';
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-            }}>
+              <Button
+                variant="outline"
+                className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2"
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/resume/NihalJaiswal_DS.pdf';
+                  link.download = 'Nihal_Jaiswal_Resume.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+              >
                 <Download className="w-4 h-4" />
                 Download PDF
               </Button>
 
-              
+              <Button
+                variant="outline"
+                className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2"
+                onClick={() => window.open('/resume/NihalJaiswal_DS.pdf', '_blank', 'noopener,noreferrer')}
+              >
+                <ExternalLink className="w-4 h-4" />
+                Open in New Tab
+              </Button>
 
-              <Button variant="outline" className="border-blue-500 text-blue-500 hover:bg-blue-500/10 gap-2" onClick={() => window.open('https://drive.google.com/file/d/1pH4SkzJTVI905gY5XbhBpmkiveagh_6P/view?usp=sharing', '_blank', 'noopener,noreferrer')}>
+              <Button
+                variant="outline"
+                className="border-blue-500 text-blue-500 hover:bg-blue-500/10 gap-2"
+                onClick={() => window.open('https://drive.google.com/file/d/1pH4SkzJTVI905gY5XbhBpmkiveagh_6P/view?usp=sharing', '_blank', 'noopener,noreferrer')}
+              >
                 <Cloud className="w-4 h-4" />
                 View on Google Drive
               </Button>
@@ -201,27 +238,39 @@ export function ResumeViewer() {
           <div className="absolute left-0 md:left-1/2 transform md:-translate-x-px top-0 bottom-0 w-0.5 bg-gradient-to-b from-portfolio-accent via-portfolio-accent/50 to-transparent" />
 
           {/* Show limited or all events */}
-          {(isExpanded ? timelineEvents : timelineEvents.slice(0, 4)).map((event, index) => <TimelineItem key={event.id} event={event} index={index} />)}
+          {(isExpanded ? timelineEvents : timelineEvents.slice(0, 4)).map((event, index) => (
+            <TimelineItem key={event.id} event={event} index={index} />
+          ))}
 
           {/* Expand/Collapse button */}
-          {timelineEvents.length > 4 && <motion.div initial={{
-          opacity: 0
-        }} animate={isInView ? {
-          opacity: 1
-        } : {}} transition={{
-          delay: 0.5
-        }} className="flex justify-center mt-8">
-              <Button variant="ghost" onClick={() => setIsExpanded(!isExpanded)} className="text-portfolio-accent hover:bg-portfolio-accent/10 gap-2">
-                {isExpanded ? <>
+          {timelineEvents.length > 4 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.5 }}
+              className="flex justify-center mt-8"
+            >
+              <Button
+                variant="ghost"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-portfolio-accent hover:bg-portfolio-accent/10 gap-2"
+              >
+                {isExpanded ? (
+                  <>
                     <ChevronUp className="w-4 h-4" />
                     Show Less
-                  </> : <>
+                  </>
+                ) : (
+                  <>
                     <ChevronDown className="w-4 h-4" />
                     Show More
-                  </>}
+                  </>
+                )}
               </Button>
-            </motion.div>}
+            </motion.div>
+          )}
         </div>
       </div>
-    </section>;
+    </section>
+  );
 }
