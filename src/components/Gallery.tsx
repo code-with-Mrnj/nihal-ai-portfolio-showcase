@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, TouchEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "./ui/card";
@@ -63,6 +63,11 @@ export function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  
+  // Swipe gesture state
+  const touchStartX = useRef<number>(0);
+  const touchEndX = useRef<number>(0);
+  const minSwipeDistance = 50;
 
   const { data: galleryItems = [], isLoading } = useQuery({
     queryKey: ["gallery-items"],
@@ -96,6 +101,33 @@ export function Gallery() {
     } else {
       setLightboxIndex((prev) => (prev === filteredItems.length - 1 ? 0 : prev + 1));
     }
+  };
+
+  // Swipe gesture handlers
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const swipeDistance = touchStartX.current - touchEndX.current;
+    
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      if (swipeDistance > 0) {
+        // Swiped left - go to next
+        navigateLightbox('next');
+      } else {
+        // Swiped right - go to prev
+        navigateLightbox('prev');
+      }
+    }
+    
+    // Reset values
+    touchStartX.current = 0;
+    touchEndX.current = 0;
   };
 
   const currentItem = filteredItems[lightboxIndex];
@@ -228,7 +260,12 @@ export function Gallery() {
               )}
 
               {/* Media Content */}
-              <div className="flex flex-col items-center justify-center w-full h-full p-8">
+              <div 
+                className="flex flex-col items-center justify-center w-full h-full p-8"
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
+              >
                 <div className="relative max-w-full max-h-[75vh] flex items-center justify-center">
                   {currentItem.media_type === 'video' ? (
                     <video
