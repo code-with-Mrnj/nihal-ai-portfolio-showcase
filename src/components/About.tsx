@@ -34,7 +34,7 @@ const education = [
 
 export function About() {
   return (
-    <section id="about" className="py-20 bg-portfolio-bg">
+    <section id="about" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>

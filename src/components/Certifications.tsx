@@ -48,7 +48,7 @@ export function Certifications() {
   const otherCerts = certifications.filter(cert => !cert.featured);
 
   return (
-    <section id="certifications" className="py-20 bg-portfolio-bg">
+    <section id="certifications" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>

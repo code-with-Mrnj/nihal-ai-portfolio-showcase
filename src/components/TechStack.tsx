@@ -53,7 +53,7 @@ const techStack = [
 
 export function TechStack() {
   return (
-    <section className="py-16 bg-portfolio-bg">
+    <section className="py-16 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h3 className="text-2xl font-bold text-portfolio-text mb-8 text-center">
