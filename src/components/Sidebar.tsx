@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home, User, FolderOpen, Award, Mail, Github, Linkedin, Menu, X, Instagram, Twitter, Image, BookOpen, LogIn, LogOut, Briefcase, Code2 } from "lucide-react";
+import { Home, User, FolderOpen, Award, Mail, Github, Linkedin, Menu, X, Instagram, Twitter, Image, BookOpen, LogIn, LogOut, Briefcase, Code2, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 const navigation = [
   { name: "HOME", href: "#home", icon: Home },
   { name: "ABOUT ME", href: "#about", icon: User },
+  { name: "RESUME", href: "#resume", icon: FileText },
   { name: "EXPERIENCE", href: "#experience", icon: Briefcase },
   { name: "PORTFOLIO", href: "#projects", icon: FolderOpen },
   { name: "CODING PROOF", href: "#coding-proof", icon: Code2 },
