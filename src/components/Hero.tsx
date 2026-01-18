@@ -1,6 +1,6 @@
 import { Button } from "./ui/button";
 import { Download, Mail } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { TypewriterText } from "./TypewriterText";
 
@@ -13,6 +13,19 @@ const roles = [
 
 export function Hero() {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches);
+    };
+    
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
   const handleContactClick = () => {
     const contactSection = document.querySelector('#contact');
@@ -41,8 +54,34 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-hero">
-      <div className="container mx-auto px-6 py-20 text-center">
+    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Video Background Layer */}
+      {!prefersReducedMotion && (
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          style={{ filter: 'brightness(0.7)' }}
+        >
+          <source src="/videos/neural-network-bg.mp4" type="video/mp4" />
+        </video>
+      )}
+
+      {/* Dark Overlay - Adjustable opacity (currently 0.5) */}
+      <div 
+        className="absolute inset-0 z-10 bg-portfolio-bg/50"
+        style={{
+          background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)'
+        }}
+      />
+
+      {/* Fallback gradient for reduced motion or if video fails */}
+      <div className="absolute inset-0 z-0 bg-gradient-hero" />
+
+      {/* Content Layer */}
+      <div className="relative z-20 container mx-auto px-6 py-20 text-center">
         <div className="max-w-4xl mx-auto">
           {/* Profile Image */}
           <motion.div
@@ -51,7 +90,11 @@ export function Hero() {
             transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8"
           >
-            <img alt="Nihal Jaiswal" className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto border-4 border-portfolio-accent shadow-glow object-cover" src="/lovable-uploads/8d8b410f-0848-4750-9d22-74a861dd488b.jpg" />
+            <img 
+              alt="Nihal Jaiswal" 
+              className="w-32 h-32 md:w-40 md:h-40 rounded-full mx-auto border-4 border-portfolio-accent shadow-glow object-cover" 
+              src="/lovable-uploads/8d8b410f-0848-4750-9d22-74a861dd488b.jpg" 
+            />
           </motion.div>
 
           {/* Greeting */}
@@ -59,7 +102,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-text mb-4"
+            className="text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-text mb-4 drop-shadow-lg"
           >
             Hi, I'm{" "}
             <span className="text-portfolio-accent">Nihal Jaiswal</span>
@@ -70,7 +113,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-xl md:text-2xl lg:text-3xl text-portfolio-accent font-medium mb-6 h-10"
+            className="text-xl md:text-2xl lg:text-3xl text-portfolio-accent font-medium mb-6 h-10 drop-shadow-md"
           >
             <TypewriterText texts={roles} typingSpeed={80} deletingSpeed={40} pauseDuration={2500} />
           </motion.h2>
@@ -80,7 +123,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-lg md:text-xl text-portfolio-text-muted max-w-3xl mx-auto mb-8 leading-relaxed"
+            className="text-lg md:text-xl text-portfolio-text-muted max-w-3xl mx-auto mb-8 leading-relaxed drop-shadow-sm"
           >
             Information Technology undergraduate specializing in AI, machine learning, and data science. 
             Passionate about building intelligent solutions with cutting-edge technologies like LangChain, 
@@ -103,7 +146,12 @@ export function Hero() {
               <Download className="mr-2 h-5 w-5" />
               {isDownloading ? "Downloading..." : "Download CV"}
             </Button>
-            <Button variant="outline" size="lg" onClick={handleContactClick} className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold px-8 py-3">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              onClick={handleContactClick} 
+              className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent hover:text-portfolio-bg transition-all duration-300 font-semibold px-8 py-3 backdrop-blur-sm"
+            >
               <Mail className="mr-2 h-5 w-5" />
               Hire Me
             </Button>
