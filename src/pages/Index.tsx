@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar";
 import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
+import { StatsCounter } from "@/components/StatsCounter";
 import { TechStack } from "@/components/TechStack";
 import { Experience } from "@/components/Experience";
 import { Projects } from "@/components/Projects";
@@ -56,6 +57,7 @@ const Index = () => {
         {/* All sections below hero wrapped with neural network background */}
         <NeuralNetworkBackground>
           <About />
+          <StatsCounter />
           <TechStack />
           <Experience />
           <Projects />
