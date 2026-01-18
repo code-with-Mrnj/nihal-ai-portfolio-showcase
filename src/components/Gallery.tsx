@@ -3,7 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { Image, Calendar, MapPin } from "lucide-react";
+import { Image, Calendar, MapPin, ChevronLeft, ChevronRight, X } from "lucide-react";
+import { Dialog, DialogContent } from "./ui/dialog";
 
 interface GalleryItem {
   id: string;
@@ -60,6 +61,8 @@ const fallbackItems: GalleryItem[] = [
 
 export function Gallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const { data: galleryItems = [], isLoading } = useQuery({
     queryKey: ["gallery-items"],
@@ -81,6 +84,21 @@ export function Gallery() {
   const filteredItems = selectedCategory === "All" 
     ? displayItems 
     : displayItems.filter(item => item.category === selectedCategory);
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const navigateLightbox = (direction: 'prev' | 'next') => {
+    if (direction === 'prev') {
+      setLightboxIndex((prev) => (prev === 0 ? filteredItems.length - 1 : prev - 1));
+    } else {
+      setLightboxIndex((prev) => (prev === filteredItems.length - 1 ? 0 : prev + 1));
+    }
+  };
+
+  const currentItem = filteredItems[lightboxIndex];
 
   return (
     <section id="gallery" className="py-20 relative">
@@ -120,8 +138,12 @@ export function Gallery() {
 
           {/* Gallery Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
-              <Card key={item.id} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden">
+            {filteredItems.map((item, index) => (
+              <Card 
+                key={item.id} 
+                className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden"
+                onClick={() => openLightbox(index)}
+              >
                 <div className="aspect-video bg-portfolio-surface relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10 pointer-events-none" />
                   {item.image_url && item.image_url !== "/placeholder.svg" ? (
@@ -133,7 +155,6 @@ export function Gallery() {
                         loop
                         autoPlay
                         playsInline
-                        controls
                       />
                     ) : (
                       <img 
@@ -179,6 +200,88 @@ export function Gallery() {
           )}
         </div>
       </div>
+
+      {/* Fullscreen Lightbox Modal */}
+      <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] w-full h-full p-0 bg-black/95 border-none flex items-center justify-center">
+          {currentItem && (
+            <>
+              {/* Close Button */}
+              <button
+                onClick={() => setLightboxOpen(false)}
+                className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+              >
+                <X className="h-6 w-6 text-white" />
+              </button>
+
+              {/* Previous Button */}
+              {filteredItems.length > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateLightbox('prev');
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronLeft className="h-8 w-8 text-white" />
+                </button>
+              )}
+
+              {/* Media Content */}
+              <div className="flex flex-col items-center justify-center w-full h-full p-8">
+                <div className="relative max-w-full max-h-[75vh] flex items-center justify-center">
+                  {currentItem.media_type === 'video' ? (
+                    <video
+                      key={currentItem.id}
+                      src={currentItem.image_url}
+                      className="max-w-full max-h-[75vh] object-contain rounded-lg"
+                      controls
+                      autoPlay
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      src={currentItem.image_url}
+                      alt={currentItem.title}
+                      className="max-w-full max-h-[75vh] object-contain rounded-lg"
+                    />
+                  )}
+                </div>
+
+                {/* Caption */}
+                <div className="mt-4 text-center max-w-2xl">
+                  <h3 className="text-xl font-semibold text-white mb-2">{currentItem.title}</h3>
+                  <div className="flex items-center justify-center text-gray-400 text-sm mb-2">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    <span className="mr-4">{currentItem.date}</span>
+                    <MapPin className="h-4 w-4 mr-1" />
+                    <span>{currentItem.location}</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">{currentItem.description}</p>
+                </div>
+
+                {/* Item Counter */}
+                <div className="mt-4 text-gray-500 text-sm">
+                  {lightboxIndex + 1} / {filteredItems.length}
+                </div>
+              </div>
+
+              {/* Next Button */}
+              {filteredItems.length > 1 && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    navigateLightbox('next');
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronRight className="h-8 w-8 text-white" />
+                </button>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
