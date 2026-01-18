@@ -129,6 +129,8 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
                 const target = nodes[targetIdx];
                 if (!target) return null;
                 const layerStyle = getLayerStyles(node.layer);
+                // Wave delay based on Y position (0-5 seconds based on vertical position)
+                const waveDelay = (node.y / 100) * 5;
                 return (
                   <motion.line
                     key={`${node.id}-${targetIdx}`}
@@ -141,14 +143,14 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
                     opacity={layerStyle.opacity * 0.6}
                     initial={{ pathLength: 0 }}
                     animate={prefersReducedMotion ? {} : { 
-                      opacity: [layerStyle.opacity * 0.4, layerStyle.opacity * 0.8, layerStyle.opacity * 0.4]
+                      opacity: [layerStyle.opacity * 0.3, layerStyle.opacity * 0.9, layerStyle.opacity * 0.3]
                     }}
                     transition={{
                       opacity: {
-                        duration: 4 + Math.random() * 4,
+                        duration: 3,
                         repeat: Infinity,
                         ease: "easeInOut",
-                        delay: Math.random() * 2
+                        delay: waveDelay
                       }
                     }}
                   />
@@ -162,7 +164,9 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
             {nodes.map((node) => {
               const layerStyle = getLayerStyles(node.layer);
               const nodeSize = 2 + node.layer * 1.5;
-              const isAccent = Math.random() > 0.7;
+              const isAccent = node.id % 3 === 0; // Deterministic instead of random for consistent rendering
+              // Wave delay based on Y position - creates top-to-bottom wave effect
+              const waveDelay = (node.y / 100) * 5;
               
               return (
                 <motion.circle
@@ -175,14 +179,14 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
                   filter="url(#nodeGlow)"
                   initial={{ scale: 1 }}
                   animate={prefersReducedMotion ? {} : {
-                    opacity: [layerStyle.opacity * 0.5, layerStyle.opacity, layerStyle.opacity * 0.5],
-                    scale: [1, 1.2, 1]
+                    opacity: [layerStyle.opacity * 0.4, layerStyle.opacity * 1.2, layerStyle.opacity * 0.4],
+                    scale: [1, 1.4, 1]
                   }}
                   transition={{
-                    duration: 3 + Math.random() * 3,
+                    duration: 3,
                     repeat: Infinity,
                     ease: "easeInOut",
-                    delay: Math.random() * 2
+                    delay: waveDelay
                   }}
                 />
               );
