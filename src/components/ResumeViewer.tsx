@@ -161,34 +161,64 @@ export function ResumeViewer() {
                   </DialogHeader>
                   <div className="flex-1 h-full min-h-0">
                     <iframe
-                      src="/resume/NihalJaiswal_DS.pdf"
+                      src="/resume/NihalJaiswal_DS.pdf#toolbar=1&navpanes=0"
                       className="w-full h-[calc(85vh-80px)] rounded-lg border border-portfolio-border"
                       title="Resume PDF"
+                      sandbox="allow-same-origin allow-scripts allow-forms"
                     />
+                  </div>
+                  <div className="flex justify-end gap-3 mt-4">
+                    <Button
+                      variant="outline"
+                      className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2"
+                      onClick={() => {
+                        const link = document.createElement('a');
+                        link.href = '/resume/NihalJaiswal_DS.pdf';
+                        link.download = 'Nihal_Jaiswal_Resume.pdf';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                    >
+                      <Download className="w-4 h-4" />
+                      Download
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2"
+                      onClick={() => window.open('/resume/NihalJaiswal_DS.pdf', '_blank', 'noopener,noreferrer')}
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                      Open in New Tab
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
 
-              <a
-                href="/resume/NihalJaiswal_DS.pdf"
-                download="Nihal_Jaiswal_Resume.pdf"
+              <Button
+                variant="outline"
+                className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2"
+                onClick={() => {
+                  const link = document.createElement('a');
+                  link.href = '/resume/NihalJaiswal_DS.pdf';
+                  link.download = 'Nihal_Jaiswal_Resume.pdf';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
               >
-                <Button variant="outline" className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10 gap-2">
-                  <Download className="w-4 h-4" />
-                  Download PDF
-                </Button>
-              </a>
+                <Download className="w-4 h-4" />
+                Download PDF
+              </Button>
 
-              <a
-                href="/resume/NihalJaiswal_DS.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Button
+                variant="outline"
+                className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2"
+                onClick={() => window.open('/resume/NihalJaiswal_DS.pdf', '_blank', 'noopener,noreferrer')}
               >
-                <Button variant="outline" className="border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent hover:text-portfolio-accent gap-2">
-                  <ExternalLink className="w-4 h-4" />
-                  Open in New Tab
-                </Button>
-              </a>
+                <ExternalLink className="w-4 h-4" />
+                Open in New Tab
+              </Button>
             </div>
           </div>
         </AnimatedSection>
