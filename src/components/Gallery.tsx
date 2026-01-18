@@ -15,6 +15,7 @@ interface GalleryItem {
   image_url: string;
   tags: string[];
   display_order: number;
+  media_type?: string;
 }
 
 // Fallback items for when database is empty
@@ -28,7 +29,8 @@ const fallbackItems: GalleryItem[] = [
     description: "First place in AI/ML hackathon with innovative cryptocurrency prediction model",
     image_url: "/placeholder.svg",
     tags: ["AI", "Machine Learning", "Winner"],
-    display_order: 0
+    display_order: 0,
+    media_type: "image"
   },
   {
     id: "2",
@@ -39,7 +41,8 @@ const fallbackItems: GalleryItem[] = [
     description: "Presenting diamond price prediction model at university tech expo",
     image_url: "/placeholder.svg",
     tags: ["Data Science", "Presentation", "University"],
-    display_order: 1
+    display_order: 1,
+    media_type: "image"
   },
   {
     id: "3",
@@ -50,7 +53,8 @@ const fallbackItems: GalleryItem[] = [
     description: "Working with development team on cross-lingual NLP system",
     image_url: "/placeholder.svg",
     tags: ["NLP", "Team Work", "Development"],
-    display_order: 2
+    display_order: 2,
+    media_type: "image"
   }
 ];
 
@@ -119,13 +123,25 @@ export function Gallery() {
             {filteredItems.map((item) => (
               <Card key={item.id} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow cursor-pointer group overflow-hidden">
                 <div className="aspect-video bg-portfolio-surface relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/80 to-transparent z-10 pointer-events-none" />
                   {item.image_url && item.image_url !== "/placeholder.svg" ? (
-                    <img 
-                      src={item.image_url} 
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                    item.media_type === 'video' ? (
+                      <video 
+                        src={item.image_url}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        muted
+                        loop
+                        autoPlay
+                        playsInline
+                        controls
+                      />
+                    ) : (
+                      <img 
+                        src={item.image_url} 
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    )
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-portfolio-surface">
                       <Image className="h-16 w-16 text-portfolio-text-muted" />

@@ -84,7 +84,7 @@ Deno.serve(async (req) => {
         // Check if it's a folder (no metadata means it's a folder)
         if (!file.metadata) {
           await listFilesInFolder(fullPath)
-        } else if (file.name.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+        } else if (file.name.match(/\.(jpg|jpeg|png|gif|webp|mp4|mov|webm)$/i)) {
           allFiles.push({ 
             path: fullPath, 
             created_at: file.created_at 
@@ -94,7 +94,7 @@ Deno.serve(async (req) => {
     }
 
     await listFilesInFolder()
-    console.log(`Found ${allFiles.length} images in storage`)
+    console.log(`Found ${allFiles.length} media files in storage`)
 
     // Process each file
     const newItems: any[] = []
@@ -141,9 +141,13 @@ Deno.serve(async (req) => {
         tags.push('learning', 'growth')
       }
 
+      // Determine media type
+      const isVideo = filename.match(/\.(mp4|mov|webm)$/i)
+      const mediaType = isVideo ? 'video' : 'image'
+
       // Clean up title from filename
       const title = filename
-        .replace(/\.(jpg|jpeg|png|gif|webp)$/i, '')
+        .replace(/\.(jpg|jpeg|png|gif|webp|mp4|mov|webm)$/i, '')
         .replace(/[-_]/g, ' ')
         .replace(/\b\w/g, l => l.toUpperCase())
         .trim() || 'Gallery Item'
@@ -163,7 +167,8 @@ Deno.serve(async (req) => {
         description: `${category} - ${title}`,
         image_url: publicUrl,
         tags,
-        display_order: displayOrder++
+        display_order: displayOrder++,
+        media_type: mediaType
       })
     }
 
@@ -189,7 +194,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: `Synced ${newItems.length} new images`,
+      message: `Synced ${newItems.length} new media files`,
       total_in_storage: allFiles.length,
       already_synced: existingUrls.size,
       newly_added: newItems.length
