@@ -4,6 +4,7 @@ import { Hero } from "@/components/Hero";
 import { About } from "@/components/About";
 import { StatsCounter } from "@/components/StatsCounter";
 import { TechStack } from "@/components/TechStack";
+import { ResumeViewer } from "@/components/ResumeViewer";
 import { Experience } from "@/components/Experience";
 import { Projects } from "@/components/Projects";
 import { CodingProof } from "@/components/CodingProof";
@@ -19,7 +20,7 @@ const Index = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "experience", "projects", "coding-proof", "certifications", "gallery", "blog", "contact"];
+      const sections = ["home", "about", "resume", "experience", "projects", "coding-proof", "certifications", "gallery", "blog", "contact"];
       const scrollPosition = window.scrollY + 100;
 
       for (const section of sections) {
@@ -59,6 +60,7 @@ const Index = () => {
           <About />
           <StatsCounter />
           <TechStack />
+          <ResumeViewer />
           <Experience />
           <Projects />
           <CodingProof />

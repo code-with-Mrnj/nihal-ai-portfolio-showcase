@@ -65,11 +65,15 @@ export function About() {
           {/* Skills */}
           <AnimatedSection delay={0.3}>
             <div className="mb-16">
-              
+              <h3 className="text-2xl font-bold text-portfolio-text mb-6">Skills</h3>
               <StaggerContainer className="flex flex-wrap gap-3">
-                {skills.map((skill, index) => <StaggerItem key={index}>
-                    
-                  </StaggerItem>)}
+                {skills.map((skill, index) => (
+                  <StaggerItem key={index}>
+                    <Badge variant="secondary" className="bg-portfolio-surface border border-portfolio-border text-portfolio-text-muted hover:border-portfolio-accent transition-colors">
+                      {skill}
+                    </Badge>
+                  </StaggerItem>
+                ))}
               </StaggerContainer>
             </div>
           </AnimatedSection>
