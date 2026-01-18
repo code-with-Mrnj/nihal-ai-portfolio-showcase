@@ -7,7 +7,7 @@ import { Textarea } from "./ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Label } from "./ui/label";
 import { toast } from "@/hooks/use-toast";
-import { Trash2, Plus, Upload, X, Edit2, Save } from "lucide-react";
+import { Trash2, Plus, Upload, X, Edit2, Save, RefreshCw } from "lucide-react";
 
 interface GalleryItem {
   id: string;
@@ -37,6 +37,7 @@ export function GalleryAdmin() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
   const { data: galleryItems = [], isLoading } = useQuery({
     queryKey: ["gallery-items-admin"],
@@ -195,6 +196,45 @@ export function GalleryAdmin() {
     setEditingId(item.id);
   };
 
+  const handleSyncFromStorage = async () => {
+    setIsSyncing(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        toast({
+          title: "Error",
+          description: "You must be logged in to sync.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('sync-gallery', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Sync Complete!",
+        description: `Added ${data.newly_added} new images from storage.`,
+      });
+
+      queryClient.invalidateQueries({ queryKey: ["gallery-items-admin"] });
+      queryClient.invalidateQueries({ queryKey: ["gallery-items"] });
+    } catch (error: any) {
+      toast({
+        title: "Sync Failed",
+        description: error.message || "Failed to sync from storage.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   const categories = ["Hackathon", "Project", "Team", "Achievement", "Learning", "Event"];
 
   return (
@@ -351,9 +391,20 @@ export function GalleryAdmin() {
 
       {/* Existing Items */}
       <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-portfolio-text">
-          Gallery Items ({galleryItems.length})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-xl font-semibold text-portfolio-text">
+            Gallery Items ({galleryItems.length})
+          </h3>
+          <Button
+            onClick={handleSyncFromStorage}
+            disabled={isSyncing}
+            variant="outline"
+            className="border-portfolio-accent text-portfolio-accent hover:bg-portfolio-accent/10"
+          >
+            <RefreshCw className={`h-4 w-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
+            {isSyncing ? 'Syncing...' : 'Sync from Storage'}
+          </Button>
+        </div>
         
         {isLoading ? (
           <p className="text-portfolio-text-muted">Loading...</p>
