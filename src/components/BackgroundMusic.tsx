@@ -1,17 +1,58 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX, Music } from 'lucide-react';
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [isMuted, setIsMuted] = useState(true);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
   
   const TARGET_VOLUME = 0.10; // 10% volume
   const FADE_DURATION = 2000; // 2 seconds fade-in
 
+  const fadeIn = useCallback((audio: HTMLAudioElement) => {
+    const startTime = Date.now();
+    
+    const fade = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / FADE_DURATION, 1);
+      
+      // Ease-out curve for smooth fade
+      const easeOut = 1 - Math.pow(1 - progress, 3);
+      audio.volume = TARGET_VOLUME * easeOut;
+      
+      if (progress < 1) {
+        requestAnimationFrame(fade);
+      }
+    };
+    
+    requestAnimationFrame(fade);
+  }, []);
+
+  const startPlayback = useCallback(async () => {
+    const audio = audioRef.current;
+    if (!audio) return false;
+
+    try {
+      audio.volume = 0;
+      await audio.play();
+      fadeIn(audio);
+      setIsPlaying(true);
+      setIsMuted(false);
+      setShowPrompt(false);
+      sessionStorage.setItem('bgMusicMuted', 'false');
+      return true;
+    } catch (error) {
+      console.log('Autoplay blocked, waiting for user interaction');
+      return false;
+    }
+  }, [fadeIn]);
+
   useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
     // Check if user prefers reduced motion
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     
@@ -20,111 +61,91 @@ const BackgroundMusic = () => {
     
     // Check session storage for user preference
     const savedPreference = sessionStorage.getItem('bgMusicMuted');
-    
-    if (savedPreference !== null) {
-      setIsMuted(savedPreference === 'true');
-    } else if (prefersReducedMotion || isMobile) {
-      // Keep muted on mobile or if user prefers reduced motion
+
+    // If user previously muted, respect that
+    if (savedPreference === 'true') {
       setIsMuted(true);
-    } else {
-      // Desktop: try to autoplay
-      setIsMuted(false);
+      return;
     }
-  }, []);
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !isLoaded) return;
-
-    if (!isMuted) {
-      // Start with volume at 0 for fade-in
-      audio.volume = 0;
-      
-      // Try to play
-      const playPromise = audio.play();
-      
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Fade in smoothly
-            fadeIn(audio);
-            setHasInteracted(true);
-          })
-          .catch(() => {
-            // Autoplay blocked - wait for user interaction
-            setIsMuted(true);
-            
-            const handleFirstInteraction = () => {
-              setHasInteracted(true);
-              document.removeEventListener('click', handleFirstInteraction);
-              document.removeEventListener('touchstart', handleFirstInteraction);
-            };
-            
-            document.addEventListener('click', handleFirstInteraction);
-            document.addEventListener('touchstart', handleFirstInteraction);
-          });
-      }
-    } else {
-      audio.pause();
+    // Don't autoplay on mobile or if reduced motion preferred
+    if (prefersReducedMotion || isMobile) {
+      setIsMuted(true);
+      return;
     }
-  }, [isMuted, isLoaded]);
 
-  const fadeIn = (audio: HTMLAudioElement) => {
-    const startTime = Date.now();
-    const startVolume = 0;
-    
-    const fade = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / FADE_DURATION, 1);
-      
-      // Ease-out curve for smooth fade
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      audio.volume = startVolume + (TARGET_VOLUME - startVolume) * easeOut;
-      
-      if (progress < 1) {
-        requestAnimationFrame(fade);
+    // Try to autoplay on desktop
+    const attemptAutoplay = async () => {
+      const success = await startPlayback();
+      if (!success) {
+        // Show prompt to user that they need to click to enable audio
+        setShowPrompt(true);
+        
+        // Listen for any user interaction to try playing
+        const handleInteraction = async () => {
+          const played = await startPlayback();
+          if (played) {
+            document.removeEventListener('click', handleInteraction);
+            document.removeEventListener('keydown', handleInteraction);
+          }
+        };
+        
+        document.addEventListener('click', handleInteraction);
+        document.addEventListener('keydown', handleInteraction);
+        
+        return () => {
+          document.removeEventListener('click', handleInteraction);
+          document.removeEventListener('keydown', handleInteraction);
+        };
       }
     };
-    
-    requestAnimationFrame(fade);
-  };
 
-  const fadeOut = (audio: HTMLAudioElement, callback?: () => void) => {
-    const startTime = Date.now();
-    const startVolume = audio.volume;
-    
-    const fade = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / (FADE_DURATION / 2), 1);
-      
-      audio.volume = startVolume * (1 - progress);
-      
-      if (progress < 1) {
-        requestAnimationFrame(fade);
-      } else {
-        audio.pause();
-        callback?.();
-      }
+    // Wait for audio to be loaded
+    const handleCanPlay = () => {
+      attemptAutoplay();
     };
-    
-    requestAnimationFrame(fade);
-  };
 
-  const toggleMute = () => {
+    if (audio.readyState >= 3) {
+      attemptAutoplay();
+    } else {
+      audio.addEventListener('canplaythrough', handleCanPlay);
+      return () => audio.removeEventListener('canplaythrough', handleCanPlay);
+    }
+  }, [startPlayback]);
+
+  const toggleMute = async () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    const newMutedState = !isMuted;
-    setIsMuted(newMutedState);
-    sessionStorage.setItem('bgMusicMuted', String(newMutedState));
-
-    if (newMutedState) {
-      fadeOut(audio);
+    if (isMuted || !isPlaying) {
+      // Try to play
+      const success = await startPlayback();
+      if (!success) {
+        setShowPrompt(true);
+      }
+    } else {
+      // Fade out and pause
+      const startTime = Date.now();
+      const startVolume = audio.volume;
+      
+      const fadeOut = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / 500, 1);
+        
+        audio.volume = startVolume * (1 - progress);
+        
+        if (progress < 1) {
+          requestAnimationFrame(fadeOut);
+        } else {
+          audio.pause();
+          setIsPlaying(false);
+          setIsMuted(true);
+          sessionStorage.setItem('bgMusicMuted', 'true');
+        }
+      };
+      
+      requestAnimationFrame(fadeOut);
     }
-  };
-
-  const handleCanPlay = () => {
-    setIsLoaded(true);
   };
 
   return (
@@ -134,21 +155,42 @@ const BackgroundMusic = () => {
         src="/audio/background-music.mp3"
         loop
         preload="auto"
-        onCanPlayThrough={handleCanPlay}
       />
+      
+      {/* Initial prompt when autoplay is blocked */}
+      <AnimatePresence>
+        {showPrompt && !isPlaying && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-20 right-6 z-50 bg-background/90 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-lg max-w-xs"
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-primary/10 rounded-full">
+                <Music className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">Ambient Music</p>
+                <p className="text-xs text-muted-foreground">Click anywhere to enable</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Mute/Unmute Button */}
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 2, duration: 0.5 }}
+        transition={{ delay: 1, duration: 0.5 }}
         onClick={toggleMute}
         className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 transition-all duration-300 group"
         aria-label={isMuted ? "Unmute background music" : "Mute background music"}
         title={isMuted ? "Play ambient music" : "Mute music"}
       >
         <AnimatePresence mode="wait">
-          {isMuted ? (
+          {isMuted || !isPlaying ? (
             <motion.div
               key="muted"
               initial={{ opacity: 0, rotate: -90 }}
@@ -172,7 +214,7 @@ const BackgroundMusic = () => {
         </AnimatePresence>
         
         {/* Subtle pulse animation when playing */}
-        {!isMuted && (
+        {isPlaying && !isMuted && (
           <motion.div
             className="absolute inset-0 rounded-full border border-primary/30"
             animate={{
