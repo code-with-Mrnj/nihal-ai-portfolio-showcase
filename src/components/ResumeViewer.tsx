@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Download, FileText, ExternalLink, ChevronDown, ChevronUp, GraduationCap, Briefcase, Award, Code } from "lucide-react";
+import { Download, FileText, ExternalLink, ChevronDown, ChevronUp, GraduationCap, Briefcase, Award, Code, Cloud } from "lucide-react";
 import { Button } from "./ui/button";
 import { AnimatedSection } from "./AnimatedSection";
 import {
@@ -218,6 +218,15 @@ export function ResumeViewer() {
               >
                 <ExternalLink className="w-4 h-4" />
                 Open in New Tab
+              </Button>
+
+              <Button
+                variant="outline"
+                className="border-blue-500 text-blue-500 hover:bg-blue-500/10 gap-2"
+                onClick={() => window.open('https://drive.google.com/file/d/1pH4SkzJTVI905gY5XbhBpmkiveagh_6P/view?usp=sharing', '_blank', 'noopener,noreferrer')}
+              >
+                <Cloud className="w-4 h-4" />
+                View on Google Drive
               </Button>
             </div>
           </div>
