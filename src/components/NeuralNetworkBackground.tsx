@@ -23,7 +23,7 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
     // Generate neural network nodes
     const generateNodes = () => {
       const newNodes: Node[] = [];
-      const nodeCount = 80;
+      const nodeCount = 200; // Increased from 80 for denser pattern
       
       for (let i = 0; i < nodeCount; i++) {
         const layer = Math.floor(Math.random() * 3); // 0, 1, 2 for depth layers
@@ -38,14 +38,14 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
 
       // Create connections between nearby nodes
       newNodes.forEach((node, i) => {
-        const connectionCount = Math.floor(Math.random() * 3) + 1;
+        const connectionCount = Math.floor(Math.random() * 4) + 2; // More connections per node
         for (let c = 0; c < connectionCount; c++) {
           const targetIdx = Math.floor(Math.random() * nodeCount);
           if (targetIdx !== i && !node.connections.includes(targetIdx)) {
             const dx = Math.abs(node.x - newNodes[targetIdx].x);
             const dy = Math.abs(node.y - newNodes[targetIdx].y);
-            // Only connect relatively close nodes
-            if (dx < 30 && dy < 30) {
+            // Connect nodes within range
+            if (dx < 25 && dy < 25) {
               node.connections.push(targetIdx);
             }
           }
