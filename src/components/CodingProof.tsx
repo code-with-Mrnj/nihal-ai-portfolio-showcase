@@ -6,7 +6,7 @@ import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSectio
 
 export function CodingProof() {
   return (
-    <section id="coding-proof" className="py-20 bg-portfolio-bg">
+    <section id="coding-proof" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>

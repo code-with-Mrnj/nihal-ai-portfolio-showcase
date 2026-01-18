@@ -77,12 +77,21 @@ export function Hero() {
         </video>
       )}
 
-      {/* Dark Overlay - above video */}
+      {/* Dark Overlay - more transparent for better video visibility */}
       <div 
         className="absolute inset-0"
         style={{
           zIndex: 2,
-          background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.7) 100%)'
+          background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 100%)'
+        }}
+      />
+
+      {/* Bottom fade transition to neural network background */}
+      <div 
+        className="absolute bottom-0 left-0 right-0 h-32"
+        style={{
+          zIndex: 3,
+          background: 'linear-gradient(to bottom, transparent 0%, hsl(var(--portfolio-bg)) 100%)'
         }}
       />
 

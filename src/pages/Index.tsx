@@ -10,6 +10,7 @@ import { Certifications } from "@/components/Certifications";
 import { Gallery } from "@/components/Gallery";
 import { Blog } from "@/components/Blog";
 import { Contact } from "@/components/Contact";
+import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -45,16 +46,21 @@ const Index = () => {
       
       {/* Main content */}
       <main className="md:ml-64">
+        {/* Hero section with video background */}
         <Hero />
-        <About />
-        <TechStack />
-        <Experience />
-        <Projects />
-        <CodingProof />
-        <Certifications />
-        <Gallery />
-        <Blog />
-        <Contact />
+        
+        {/* All sections below hero wrapped with neural network background */}
+        <NeuralNetworkBackground>
+          <About />
+          <TechStack />
+          <Experience />
+          <Projects />
+          <CodingProof />
+          <Certifications />
+          <Gallery />
+          <Blog />
+          <Contact />
+        </NeuralNetworkBackground>
       </main>
 
       {/* ElevenLabs ConvAI Widget */}

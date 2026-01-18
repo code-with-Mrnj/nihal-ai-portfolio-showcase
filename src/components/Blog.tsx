@@ -44,7 +44,7 @@ export function Blog() {
   const otherPosts = blogPosts.filter(post => !post.featured);
 
   return (
-    <section id="blog" className="py-20 bg-portfolio-bg">
+    <section id="blog" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">

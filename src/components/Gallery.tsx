@@ -79,7 +79,7 @@ export function Gallery() {
     : displayItems.filter(item => item.category === selectedCategory);
 
   return (
-    <section id="gallery" className="py-20 bg-portfolio-surface">
+    <section id="gallery" className="py-20 relative">
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">

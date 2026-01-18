@@ -62,7 +62,7 @@ const typeColors: Record<string, string> = {
 
 export function Experience() {
   return (
-    <section id="experience" className="py-20 bg-portfolio-surface/30">
+    <section id="experience" className="py-20 relative">
       <div className="container mx-auto px-6">
         <AnimatedSection>
           <div className="text-center mb-16">
