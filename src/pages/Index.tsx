@@ -11,6 +11,7 @@ import { Gallery } from "@/components/Gallery";
 import { Blog } from "@/components/Blog";
 import { Contact } from "@/components/Contact";
 import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
+import BackgroundMusic from "@/components/BackgroundMusic";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -43,6 +44,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-portfolio-bg">
       <Sidebar activeSection={activeSection} />
+      
+      {/* Background Music */}
+      <BackgroundMusic />
       
       {/* Main content */}
       <main className="md:ml-64">
