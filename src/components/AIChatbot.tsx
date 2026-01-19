@@ -1,10 +1,30 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Bot, User, Trash2, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot } from "@/hooks/useChatbot";
+
+// Typing indicator component with animated dots
+const TypingIndicator = () => (
+  <div className="flex items-center gap-1">
+    <motion.span
+      className="w-2 h-2 bg-portfolio-accent rounded-full"
+      animate={{ y: [0, -4, 0] }}
+      transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+    />
+    <motion.span
+      className="w-2 h-2 bg-portfolio-accent rounded-full"
+      animate={{ y: [0, -4, 0] }}
+      transition={{ duration: 0.6, repeat: Infinity, delay: 0.15 }}
+    />
+    <motion.span
+      className="w-2 h-2 bg-portfolio-accent rounded-full"
+      animate={{ y: [0, -4, 0] }}
+      transition={{ duration: 0.6, repeat: Infinity, delay: 0.3 }}
+    />
+  </div>
+);
 
 export const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,7 +56,7 @@ export const AIChatbot = () => {
   };
 
   return (
-    <div className="fixed bottom-6 left-6 z-50">
+    <div className="fixed bottom-6 right-24 z-50">
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -44,7 +64,7 @@ export const AIChatbot = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-16 left-0 w-80 sm:w-96 bg-portfolio-bg/95 backdrop-blur-xl border border-portfolio-accent/30 rounded-2xl shadow-2xl overflow-hidden"
+            className="absolute bottom-16 right-0 w-80 sm:w-96 bg-portfolio-bg/95 backdrop-blur-xl border border-portfolio-accent/30 rounded-2xl shadow-2xl overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-portfolio-accent to-portfolio-purple p-4 flex items-center justify-between">
@@ -130,12 +150,7 @@ export const AIChatbot = () => {
                             : "bg-portfolio-card text-portfolio-text rounded-bl-md"
                         }`}
                       >
-                        {message.content || (
-                          <span className="flex items-center gap-2 text-portfolio-text/50">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            Thinking...
-                          </span>
-                        )}
+                        {message.content || <TypingIndicator />}
                       </div>
                     </motion.div>
                   ))}
@@ -149,7 +164,7 @@ export const AIChatbot = () => {
                         <Bot className="w-4 h-4 text-portfolio-accent" />
                       </div>
                       <div className="bg-portfolio-card p-3 rounded-2xl rounded-bl-md">
-                        <Loader2 className="w-4 h-4 animate-spin text-portfolio-accent" />
+                        <TypingIndicator />
                       </div>
                     </motion.div>
                   )}
@@ -165,12 +180,12 @@ export const AIChatbot = () => {
             {/* Input */}
             <form onSubmit={handleSubmit} className="p-4 border-t border-portfolio-accent/20">
               <div className="flex gap-2">
-                <Input
+                <input
                   ref={inputRef}
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   placeholder="Type a message..."
-                  className="flex-1 bg-portfolio-card border-portfolio-accent/20 text-portfolio-text placeholder:text-portfolio-text/40 focus-visible:ring-portfolio-accent"
+                  className="flex-1 px-4 py-2 bg-portfolio-card border border-portfolio-accent/20 rounded-lg text-portfolio-text placeholder:text-portfolio-text/40 focus:outline-none focus:ring-2 focus:ring-portfolio-accent/50 disabled:opacity-50"
                   disabled={isLoading}
                 />
                 <Button

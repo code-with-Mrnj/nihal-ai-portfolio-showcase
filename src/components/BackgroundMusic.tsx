@@ -179,7 +179,7 @@ const BackgroundMusic = () => {
         )}
       </AnimatePresence>
       
-      {/* Mute/Unmute Button */}
+      {/* Mute/Unmute Button - positioned bottom left */}
       <motion.button
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
