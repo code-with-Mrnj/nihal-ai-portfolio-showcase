@@ -1,9 +1,59 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot } from "@/hooks/useChatbot";
+
+// Sound effects using Web Audio API
+const useAudioFeedback = () => {
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const getAudioContext = useCallback(() => {
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+    return audioContextRef.current;
+  }, []);
+
+  const playSound = useCallback((frequency: number, duration: number, type: OscillatorType = 'sine') => {
+    try {
+      const ctx = getAudioContext();
+      const oscillator = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      oscillator.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      oscillator.frequency.value = frequency;
+      oscillator.type = type;
+      
+      gainNode.gain.setValueAtTime(0.1, ctx.currentTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+      
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + duration);
+    } catch (e) {
+      console.log('Audio not supported');
+    }
+  }, [getAudioContext]);
+
+  const playSendSound = useCallback(() => {
+    playSound(800, 0.1, 'sine');
+    setTimeout(() => playSound(1000, 0.1, 'sine'), 50);
+  }, [playSound]);
+
+  const playReceiveSound = useCallback(() => {
+    playSound(600, 0.15, 'sine');
+    setTimeout(() => playSound(800, 0.1, 'sine'), 100);
+  }, [playSound]);
+
+  const playTypingSound = useCallback(() => {
+    playSound(400, 0.05, 'square');
+  }, [playSound]);
+
+  return { playSendSound, playReceiveSound, playTypingSound };
+};
 
 // Typing indicator component with animated dots
 const TypingIndicator = () => (
@@ -32,6 +82,8 @@ export const AIChatbot = () => {
   const { messages, isLoading, error, sendMessage, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const prevMessagesLength = useRef(messages.length);
+  const { playSendSound, playReceiveSound, playTypingSound } = useAudioFeedback();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -40,6 +92,17 @@ export const AIChatbot = () => {
     }
   }, [messages]);
 
+  // Play sound when new message arrives
+  useEffect(() => {
+    if (messages.length > prevMessagesLength.current) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.role === 'assistant' && lastMessage.content) {
+        playReceiveSound();
+      }
+    }
+    prevMessagesLength.current = messages.length;
+  }, [messages, playReceiveSound]);
+
   // Focus input when chat opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -47,9 +110,17 @@ export const AIChatbot = () => {
     }
   }, [isOpen]);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.target.value);
+    if (e.target.value.length > inputValue.length) {
+      playTypingSound();
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && !isLoading) {
+      playSendSound();
       sendMessage(inputValue);
       setInputValue("");
     }
@@ -111,6 +182,7 @@ export const AIChatbot = () => {
                       <button
                         key={suggestion}
                         onClick={() => {
+                          playSendSound();
                           setInputValue(suggestion);
                           sendMessage(suggestion);
                         }}
@@ -183,9 +255,9 @@ export const AIChatbot = () => {
                 <input
                   ref={inputRef}
                   value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
+                  onChange={handleInputChange}
                   placeholder="Type a message..."
-                  className="flex-1 px-4 py-2 bg-portfolio-card border border-portfolio-accent/20 rounded-lg text-portfolio-text placeholder:text-portfolio-text/40 focus:outline-none focus:ring-2 focus:ring-portfolio-accent/50 disabled:opacity-50"
+                  className="flex-1 px-4 py-2 bg-white dark:bg-gray-800 border border-portfolio-accent/30 rounded-lg text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-portfolio-accent/50 disabled:opacity-50"
                   disabled={isLoading}
                 />
                 <Button
