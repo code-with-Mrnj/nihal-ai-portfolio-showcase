@@ -1,10 +1,11 @@
 import { useState, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 export const useChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -20,73 +21,110 @@ export const useChatbot = () => {
     setError(null);
 
     try {
-      const response = await supabase.functions.invoke("chat", {
-        body: {
-          messages: [...messages, newUserMessage].map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+      const allMessages = [...messages, newUserMessage].map((m) => ({
+        role: m.role,
+        content: m.content,
+      }));
+
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
+        body: JSON.stringify({ messages: allMessages }),
       });
 
-      if (response.error) {
-        throw new Error(response.error.message || "Failed to get response");
+      if (!response.ok) {
+        if (response.status === 429) {
+          throw new Error("Rate limit reached. Please try again later.");
+        }
+        if (response.status === 402) {
+          throw new Error("AI credits exhausted. Please try again later.");
+        }
+        throw new Error("Failed to get AI response");
       }
 
-      // Handle streaming response
-      const reader = response.data.getReader?.();
-      
-      if (reader) {
-        const decoder = new TextDecoder();
-        let assistantMessage = "";
+      if (!response.body) {
+        throw new Error("No response body");
+      }
 
-        // Add empty assistant message that we'll update
-        setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let assistantMessage = "";
+      let textBuffer = "";
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
+      // Add empty assistant message that we'll update
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
-          const chunk = decoder.decode(value);
-          const lines = chunk.split("\n");
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
 
-          for (const line of lines) {
-            if (line.startsWith("data: ")) {
-              const data = line.slice(6);
-              if (data === "[DONE]") continue;
+        textBuffer += decoder.decode(value, { stream: true });
 
-              try {
-                const parsed = JSON.parse(data);
-                const content = parsed.choices?.[0]?.delta?.content || "";
-                assistantMessage += content;
+        // Process line-by-line
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
 
-                // Update the last message with new content
-                setMessages((prev) => {
-                  const updated = [...prev];
-                  updated[updated.length - 1] = {
-                    role: "assistant",
-                    content: assistantMessage,
-                  };
-                  return updated;
-                });
-              } catch {
-                // Skip invalid JSON
-              }
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") continue;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content || "";
+            if (content) {
+              assistantMessage += content;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: "assistant",
+                  content: assistantMessage,
+                };
+                return updated;
+              });
             }
+          } catch {
+            // Incomplete JSON, put back and wait for more
+            textBuffer = line + "\n" + textBuffer;
+            break;
           }
         }
-      } else {
-        // Non-streaming fallback
-        const data = response.data;
-        if (typeof data === "string") {
-          setMessages((prev) => [...prev, { role: "assistant", content: data }]);
-        } else if (data?.choices?.[0]?.message?.content) {
-          setMessages((prev) => [
-            ...prev,
-            { role: "assistant", content: data.choices[0].message.content },
-          ]);
+      }
+
+      // Final flush
+      if (textBuffer.trim()) {
+        for (let raw of textBuffer.split("\n")) {
+          if (!raw) continue;
+          if (raw.endsWith("\r")) raw = raw.slice(0, -1);
+          if (raw.startsWith(":") || raw.trim() === "") continue;
+          if (!raw.startsWith("data: ")) continue;
+          const jsonStr = raw.slice(6).trim();
+          if (jsonStr === "[DONE]") continue;
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content || "";
+            if (content) {
+              assistantMessage += content;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = {
+                  role: "assistant",
+                  content: assistantMessage,
+                };
+                return updated;
+              });
+            }
+          } catch { /* ignore */ }
         }
       }
+
     } catch (err) {
       console.error("Chatbot error:", err);
       setError(err instanceof Error ? err.message : "Something went wrong");
