@@ -2,3 +2,6 @@ project_id = "etsfrzxkufdreiughznf"
 
 [functions.sync-gallery]
 verify_jwt = false
+
+[functions.chat]
+verify_jwt = false

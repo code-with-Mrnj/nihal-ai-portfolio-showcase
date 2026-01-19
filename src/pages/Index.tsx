@@ -15,6 +15,7 @@ import { Contact } from "@/components/Contact";
 import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import { ElevenLabsWidget } from "@/components/ElevenLabsWidget";
+import { AIChatbot } from "@/components/AIChatbot";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -74,6 +75,9 @@ const Index = () => {
 
       {/* ElevenLabs ConvAI Widget */}
       <ElevenLabsWidget />
+
+      {/* AI Chatbot */}
+      <AIChatbot />
     </div>
   );
 };
