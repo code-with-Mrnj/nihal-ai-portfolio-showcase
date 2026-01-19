@@ -185,11 +185,8 @@ export function Gallery() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         muted
                         loop
+                        autoPlay
                         playsInline
-                        preload="none"
-                        poster=""
-                        onMouseEnter={(e) => e.currentTarget.play()}
-                        onMouseLeave={(e) => e.currentTarget.pause()}
                       />
                     ) : (
                       <img 

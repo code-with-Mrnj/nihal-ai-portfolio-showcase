@@ -46,11 +46,11 @@ export function Hero() {
       zIndex: 0
     }} />
 
-      {/* Video Background Layer - above fallback */}
-      {!prefersReducedMotion && <video autoPlay loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover" style={{
+      {/* Video Background Layer - slowed down */}
+      {!prefersReducedMotion && <video autoPlay loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{
       zIndex: 1,
       filter: 'brightness(0.7)'
-    }} onError={e => {
+    }} ref={(el) => { if (el) el.playbackRate = 0.5; }} onError={e => {
       console.error('Video failed to load:', e);
     }}>
           <source src="/videos/neural-network-bg.mp4" type="video/mp4" />
