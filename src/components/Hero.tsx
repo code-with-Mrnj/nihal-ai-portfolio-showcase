@@ -47,7 +47,7 @@ export function Hero() {
     }} />
 
       {/* Video Background Layer - above fallback */}
-      {!prefersReducedMotion && <video autoPlay loop muted playsInline preload="auto" className="absolute inset-0 w-full h-full object-cover" style={{
+      {!prefersReducedMotion && <video autoPlay loop muted playsInline preload="metadata" className="absolute inset-0 w-full h-full object-cover" style={{
       zIndex: 1,
       filter: 'brightness(0.7)'
     }} onError={e => {
