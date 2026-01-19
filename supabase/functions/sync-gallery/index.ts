@@ -1,8 +1,31 @@
+/**
+ * Sync Gallery Edge Function
+ * 
+ * Security Notes:
+ * - verify_jwt is disabled in config.toml to allow custom authorization logic
+ * - This function manually verifies JWT and requires admin role
+ * - DO NOT REMOVE the authorization checks below
+ * - CORS is restricted to allowed origins for additional security
+ */
+
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// Allowed origins for CORS - restrict to known domains
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'http://localhost:8080',
+  'https://id-preview--773f37ba-56bf-4259-bdd7-c43753aff9ae.lovable.app',
+  'https://nihal-ai-portfolio-showcase.lovable.app',
+]
+
+function getCorsHeaders(origin: string | null): Record<string, string> {
+  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  }
 }
 
 interface StorageObject {
@@ -12,6 +35,9 @@ interface StorageObject {
 }
 
 Deno.serve(async (req) => {
+  const origin = req.headers.get('Origin')
+  const corsHeaders = getCorsHeaders(origin)
+
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -22,19 +48,32 @@ Deno.serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Verify user is admin
+    // Verify user is admin - manual JWT verification
+    // This is required because verify_jwt is disabled for custom auth flow
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
+      console.log('Missing authorization header')
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       })
     }
 
-    const token = authHeader.replace('Bearer ', '')
+    const token = authHeader.replace('Bearer ', '').trim()
+    
+    // Validate token format before calling API
+    if (!token || token.length < 20) {
+      console.log('Invalid token format')
+      return new Response(JSON.stringify({ error: 'Invalid token format' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      })
+    }
+
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
     
     if (authError || !user) {
+      console.log('Auth error:', authError?.message || 'No user found')
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -48,6 +87,7 @@ Deno.serve(async (req) => {
     })
 
     if (!isAdmin) {
+      console.log('User is not admin:', user.id)
       return new Response(JSON.stringify({ error: 'Admin access required' }), {
         status: 403,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }

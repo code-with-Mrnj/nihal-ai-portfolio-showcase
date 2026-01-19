@@ -14,6 +14,7 @@ import { Blog } from "@/components/Blog";
 import { Contact } from "@/components/Contact";
 import { NeuralNetworkBackground } from "@/components/NeuralNetworkBackground";
 import BackgroundMusic from "@/components/BackgroundMusic";
+import { ElevenLabsWidget } from "@/components/ElevenLabsWidget";
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState("home");
@@ -72,11 +73,7 @@ const Index = () => {
       </main>
 
       {/* ElevenLabs ConvAI Widget */}
-      <div 
-        dangerouslySetInnerHTML={{
-          __html: '<elevenlabs-convai agent-id="agent_9001k36j0yxwfc29wdfss5wv58fa"></elevenlabs-convai>'
-        }}
-      />
+      <ElevenLabsWidget />
     </div>
   );
 };
