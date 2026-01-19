@@ -1,12 +1,7 @@
-import { Hono } from "https://deno.land/x/hono@v3.12.11/mod.ts";
-import { cors } from "https://deno.land/x/hono@v3.12.11/middleware/cors/index.ts";
-
-const app = new Hono();
-
-app.use("/*", cors({
-  origin: "*",
-  allowHeaders: ["authorization", "x-client-info", "apikey", "content-type"],
-}));
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 // System prompt with Nihal's portfolio context
 const SYSTEM_PROMPT = `You are Nihal Jaiswal's AI portfolio assistant. You help visitors learn about Nihal and answer questions about his skills, projects, and experience.
@@ -50,19 +45,32 @@ const SYSTEM_PROMPT = `You are Nihal Jaiswal's AI portfolio assistant. You help 
 - Encourage visitors to explore the portfolio sections
 - For detailed inquiries, suggest using the contact form`;
 
-app.post("/", async (c) => {
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
   try {
-    const { messages } = await c.req.json();
+    const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
-      return c.json({ error: "Messages array is required" }, 400);
+      return new Response(JSON.stringify({ error: "Messages array is required" }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
       console.error("LOVABLE_API_KEY not configured");
-      return c.json({ error: "API key not configured" }, 500);
+      return new Response(JSON.stringify({ error: "API key not configured" }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+
+    console.log("Calling Lovable AI with", messages.length, "messages");
 
     const response = await fetch("https://ai.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -86,30 +94,34 @@ app.post("/", async (c) => {
       console.error("Lovable AI error:", response.status, errorText);
       
       if (response.status === 429 || response.status === 402) {
-        return c.json({ error: "Rate limit reached. Please try again later." }, 429);
+        return new Response(JSON.stringify({ error: "Rate limit reached. Please try again later." }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
       
-      return c.json({ error: "Failed to get AI response" }, response.status);
+      return new Response(JSON.stringify({ error: "Failed to get AI response" }), {
+        status: response.status,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
+
+    console.log("Streaming response from Lovable AI");
 
     // Stream the response
     return new Response(response.body, {
       headers: {
+        ...corsHeaders,
         "Content-Type": "text/event-stream",
         "Cache-Control": "no-cache",
         "Connection": "keep-alive",
-        "Access-Control-Allow-Origin": "*",
       },
     });
   } catch (error) {
     console.error("Chat function error:", error);
-    return c.json({ error: "Internal server error" }, 500);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 });
-
-// Handle OPTIONS for CORS
-app.options("/", (c) => {
-  return c.text("", 204);
-});
-
-Deno.serve(app.fetch);
