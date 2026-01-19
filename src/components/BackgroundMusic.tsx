@@ -164,7 +164,7 @@ const BackgroundMusic = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-20 right-6 z-50 bg-background/90 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-lg max-w-xs"
+            className="fixed bottom-20 left-6 z-50 bg-background/90 backdrop-blur-sm border border-primary/30 rounded-lg p-4 shadow-lg max-w-xs"
           >
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/10 rounded-full">
@@ -185,7 +185,7 @@ const BackgroundMusic = () => {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 1, duration: 0.5 }}
         onClick={toggleMute}
-        className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 transition-all duration-300 group"
+        className="fixed bottom-6 left-6 z-50 p-3 rounded-full bg-background/80 backdrop-blur-sm border border-primary/20 hover:border-primary/40 transition-all duration-300 group"
         aria-label={isMuted ? "Unmute background music" : "Mute background music"}
         title={isMuted ? "Play ambient music" : "Mute music"}
       >
