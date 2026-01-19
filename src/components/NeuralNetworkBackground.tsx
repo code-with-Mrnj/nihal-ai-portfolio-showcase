@@ -40,8 +40,8 @@ export function NeuralNetworkBackground({ children }: { children: React.ReactNod
     const allNodes: Node[] = [];
     const allConnections: Connection[] = [];
     
-    // Balanced: 4 blocks, 7 layers for denser but performant network
-    const networkBlocks = isLowEndDevice ? 3 : 4;
+    // Balanced: 5 blocks, 7 layers for denser but performant network
+    const networkBlocks = isLowEndDevice ? 4 : 5;
     const layersPerBlock = 7;
     const nodesPerLayer = [4, 6, 8, 10, 8, 6, 4];
     
