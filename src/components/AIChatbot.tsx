@@ -5,6 +5,47 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot } from "@/hooks/useChatbot";
 
+// Simple markdown parser for chat messages
+const parseMarkdown = (text: string) => {
+  if (!text) return null;
+  
+  // Split by markdown patterns and create elements
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let keyIndex = 0;
+  
+  // Match **bold**, *italic*, and `code`
+  const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)/g;
+  let match;
+  
+  while ((match = regex.exec(text)) !== null) {
+    // Add text before the match
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    
+    if (match[2]) {
+      // Bold **text**
+      parts.push(<strong key={keyIndex++} className="font-bold">{match[2]}</strong>);
+    } else if (match[3]) {
+      // Italic *text*
+      parts.push(<em key={keyIndex++} className="italic">{match[3]}</em>);
+    } else if (match[4]) {
+      // Code `text`
+      parts.push(<code key={keyIndex++} className="bg-portfolio-accent/20 px-1 rounded text-xs">{match[4]}</code>);
+    }
+    
+    lastIndex = match.index + match[0].length;
+  }
+  
+  // Add remaining text
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+  
+  return parts.length > 0 ? parts : text;
+};
+
 // Sound effects using Web Audio API
 const useAudioFeedback = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -76,14 +117,40 @@ const TypingIndicator = () => (
   </div>
 );
 
+// Welcome message component
+const WelcomeMessage = () => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="flex gap-3"
+  >
+    <div className="w-8 h-8 rounded-full bg-portfolio-accent/20 flex items-center justify-center flex-shrink-0">
+      <Bot className="w-4 h-4 text-portfolio-accent" />
+    </div>
+    <div className="max-w-[85%] p-3 rounded-2xl rounded-bl-md bg-portfolio-card text-portfolio-text text-sm">
+      <p>👋 <strong className="font-bold">Hey there!</strong> I'm Nihal's AI assistant.</p>
+      <p className="mt-2">I can tell you about his <strong className="font-bold">skills</strong>, <strong className="font-bold">projects</strong>, <strong className="font-bold">hackathon experiences</strong>, or help you get in touch!</p>
+      <p className="mt-2 text-portfolio-text/70">What would you like to know?</p>
+    </div>
+  </motion.div>
+);
+
 export const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const [showWelcome, setShowWelcome] = useState(true);
   const { messages, isLoading, error, sendMessage, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const prevMessagesLength = useRef(messages.length);
   const { playSendSound, playReceiveSound, playTypingSound } = useAudioFeedback();
+
+  // Hide welcome message when user sends first message
+  useEffect(() => {
+    if (messages.length > 0) {
+      setShowWelcome(false);
+    }
+  }, [messages]);
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -109,6 +176,11 @@ export const AIChatbot = () => {
       setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
+
+  const handleClearMessages = () => {
+    clearMessages();
+    setShowWelcome(true);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
@@ -152,7 +224,7 @@ export const AIChatbot = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  onClick={clearMessages}
+                  onClick={handleClearMessages}
                   className="h-8 w-8 text-white/70 hover:text-white hover:bg-white/20"
                   title="Clear chat"
                 >
@@ -171,14 +243,19 @@ export const AIChatbot = () => {
 
             {/* Messages */}
             <ScrollArea className="h-80 p-4" ref={scrollRef}>
-              {messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-4">
-                  <Bot className="w-12 h-12 text-portfolio-accent/50 mb-3" />
-                  <p className="text-portfolio-text/70 text-sm">
-                    Hi! I'm Nihal's AI assistant. Ask me about his skills, projects, or experience!
-                  </p>
-                  <div className="mt-4 flex flex-wrap gap-2 justify-center">
-                    {["What skills does Nihal have?", "Tell me about projects", "How to contact?"].map((suggestion) => (
+              <div className="space-y-4">
+                {/* Welcome message */}
+                {showWelcome && messages.length === 0 && <WelcomeMessage />}
+                
+                {/* Quick suggestions when no messages */}
+                {messages.length === 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="mt-4 flex flex-wrap gap-2 justify-center"
+                  >
+                    {["What are Nihal's skills?", "Tell me about projects", "How to contact Nihal?"].map((suggestion) => (
                       <button
                         key={suggestion}
                         onClick={() => {
@@ -191,57 +268,63 @@ export const AIChatbot = () => {
                         {suggestion}
                       </button>
                     ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((message, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  </motion.div>
+                )}
+
+                {/* Chat messages */}
+                {messages.map((message, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                        message.role === "user"
+                          ? "bg-portfolio-purple/20"
+                          : "bg-portfolio-accent/20"
+                      }`}
                     >
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                          message.role === "user"
-                            ? "bg-portfolio-purple/20"
-                            : "bg-portfolio-accent/20"
-                        }`}
-                      >
-                        {message.role === "user" ? (
-                          <User className="w-4 h-4 text-portfolio-purple" />
-                        ) : (
-                          <Bot className="w-4 h-4 text-portfolio-accent" />
-                        )}
-                      </div>
-                      <div
-                        className={`max-w-[75%] p-3 rounded-2xl text-sm ${
-                          message.role === "user"
-                            ? "bg-portfolio-purple/20 text-portfolio-text rounded-br-md"
-                            : "bg-portfolio-card text-portfolio-text rounded-bl-md"
-                        }`}
-                      >
-                        {message.content || <TypingIndicator />}
-                      </div>
-                    </motion.div>
-                  ))}
-                  {isLoading && messages[messages.length - 1]?.role === "user" && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex gap-3"
-                    >
-                      <div className="w-8 h-8 rounded-full bg-portfolio-accent/20 flex items-center justify-center">
+                      {message.role === "user" ? (
+                        <User className="w-4 h-4 text-portfolio-purple" />
+                      ) : (
                         <Bot className="w-4 h-4 text-portfolio-accent" />
-                      </div>
-                      <div className="bg-portfolio-card p-3 rounded-2xl rounded-bl-md">
+                      )}
+                    </div>
+                    <div
+                      className={`max-w-[75%] p-3 rounded-2xl text-sm ${
+                        message.role === "user"
+                          ? "bg-portfolio-purple/20 text-portfolio-text rounded-br-md"
+                          : "bg-portfolio-card text-portfolio-text rounded-bl-md"
+                      }`}
+                    >
+                      {message.content ? (
+                        message.role === "assistant" ? parseMarkdown(message.content) : message.content
+                      ) : (
                         <TypingIndicator />
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              )}
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+                
+                {/* Loading indicator */}
+                {isLoading && messages[messages.length - 1]?.role === "user" && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex gap-3"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-portfolio-accent/20 flex items-center justify-center">
+                      <Bot className="w-4 h-4 text-portfolio-accent" />
+                    </div>
+                    <div className="bg-portfolio-card p-3 rounded-2xl rounded-bl-md">
+                      <TypingIndicator />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+              
               {error && (
                 <div className="mt-3 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-xs">
                   {error}
