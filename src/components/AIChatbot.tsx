@@ -1,49 +1,110 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Bot, User, Trash2 } from "lucide-react";
+import { MessageCircle, X, Send, Bot, User, Trash2, Smile } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useChatbot } from "@/hooks/useChatbot";
+
+// Emoji categories
+const emojiData = {
+  "Smileys": ["😀", "😃", "😄", "😁", "😅", "😂", "🤣", "😊", "😇", "🙂", "😉", "😍", "🥰", "😘", "😋", "😎", "🤩", "🥳", "😏", "🤔", "🤗", "🤭", "😐", "😑", "😶", "🙄", "😬", "😮", "🤯", "😱"],
+  "Gestures": ["👋", "🤚", "✋", "🖐️", "👌", "🤌", "✌️", "🤞", "🤟", "🤘", "👍", "👎", "👏", "🙌", "🤝", "🙏", "💪", "🎉", "🔥", "⭐", "💯", "✨", "❤️", "🧡", "💛", "💚", "💙", "💜", "🖤", "💝"],
+  "Objects": ["💻", "📱", "💡", "📚", "🎯", "🚀", "⚡", "🔧", "⚙️", "📊", "📈", "🎓", "🏆", "🎨", "🎮", "📧", "💼", "📁", "🔗", "💾", "🖥️", "⌨️", "🖱️", "📝", "✏️", "📌", "📍", "🔍", "💎", "🌟"]
+};
 
 // Simple markdown parser for chat messages
 const parseMarkdown = (text: string) => {
   if (!text) return null;
   
-  // Split by markdown patterns and create elements
   const parts: (string | JSX.Element)[] = [];
   let lastIndex = 0;
   let keyIndex = 0;
   
-  // Match **bold**, *italic*, and `code`
   const regex = /(\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`)/g;
   let match;
   
   while ((match = regex.exec(text)) !== null) {
-    // Add text before the match
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index));
     }
     
     if (match[2]) {
-      // Bold **text**
       parts.push(<strong key={keyIndex++} className="font-bold">{match[2]}</strong>);
     } else if (match[3]) {
-      // Italic *text*
       parts.push(<em key={keyIndex++} className="italic">{match[3]}</em>);
     } else if (match[4]) {
-      // Code `text`
       parts.push(<code key={keyIndex++} className="bg-portfolio-accent/20 px-1 rounded text-xs">{match[4]}</code>);
     }
     
     lastIndex = match.index + match[0].length;
   }
   
-  // Add remaining text
   if (lastIndex < text.length) {
     parts.push(text.slice(lastIndex));
   }
   
   return parts.length > 0 ? parts : text;
+};
+
+// Emoji Picker Component
+const EmojiPicker = ({ onSelect, onClose }: { onSelect: (emoji: string) => void; onClose: () => void }) => {
+  const [activeCategory, setActiveCategory] = useState<keyof typeof emojiData>("Smileys");
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [onClose]);
+
+  return (
+    <motion.div
+      ref={pickerRef}
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+      className="absolute bottom-full right-0 mb-2 w-72 bg-portfolio-bg border border-portfolio-accent/30 rounded-xl shadow-2xl overflow-hidden"
+    >
+      {/* Category tabs */}
+      <div className="flex border-b border-portfolio-accent/20 p-1 gap-1">
+        {Object.keys(emojiData).map((category) => (
+          <button
+            key={category}
+            onClick={() => setActiveCategory(category as keyof typeof emojiData)}
+            className={`flex-1 px-2 py-1.5 text-xs rounded-lg transition-colors ${
+              activeCategory === category
+                ? "bg-portfolio-accent text-white"
+                : "text-portfolio-text/70 hover:bg-portfolio-accent/10"
+            }`}
+          >
+            {category}
+          </button>
+        ))}
+      </div>
+      
+      {/* Emoji grid */}
+      <div className="p-2 h-40 overflow-y-auto">
+        <div className="grid grid-cols-8 gap-1">
+          {emojiData[activeCategory].map((emoji, index) => (
+            <button
+              key={index}
+              onClick={() => {
+                onSelect(emoji);
+                onClose();
+              }}
+              className="w-8 h-8 flex items-center justify-center text-lg hover:bg-portfolio-accent/20 rounded-lg transition-colors"
+            >
+              {emoji}
+            </button>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
 };
 
 // Sound effects using Web Audio API
@@ -139,6 +200,7 @@ export const AIChatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { messages, isLoading, error, sendMessage, clearMessages } = useChatbot();
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -189,12 +251,18 @@ export const AIChatbot = () => {
     }
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    setInputValue(prev => prev + emoji);
+    inputRef.current?.focus();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim() && !isLoading) {
       playSendSound();
       sendMessage(inputValue);
       setInputValue("");
+      setShowEmojiPicker(false);
     }
   };
 
@@ -334,7 +402,27 @@ export const AIChatbot = () => {
 
             {/* Input */}
             <form onSubmit={handleSubmit} className="p-4 border-t border-portfolio-accent/20">
-              <div className="flex gap-2">
+              <div className="flex gap-2 relative">
+                {/* Emoji Picker */}
+                <AnimatePresence>
+                  {showEmojiPicker && (
+                    <EmojiPicker
+                      onSelect={handleEmojiSelect}
+                      onClose={() => setShowEmojiPicker(false)}
+                    />
+                  )}
+                </AnimatePresence>
+                
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                  className="text-portfolio-text/60 hover:text-portfolio-accent hover:bg-portfolio-accent/10"
+                >
+                  <Smile className="w-5 h-5" />
+                </Button>
+                
                 <input
                   ref={inputRef}
                   value={inputValue}
