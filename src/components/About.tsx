@@ -68,7 +68,7 @@ export function About() {
               
               <StaggerContainer className="flex flex-wrap gap-3">
                 {skills.map((skill, index) => <StaggerItem key={index}>
-                    
+                    <Badge variant="secondary" className="text-sm py-1 px-3">{skill}</Badge>
                   </StaggerItem>)}
               </StaggerContainer>
             </div>
