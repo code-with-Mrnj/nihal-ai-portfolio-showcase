@@ -1,10 +1,25 @@
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink, Github, FileText, LayoutDashboard, Play, Box } from "lucide-react";
 import { AnimatedSection, StaggerContainer, StaggerItem } from "./AnimatedSection";
 
-const projects = [
+type ExtraLink = { label: "Paper" | "Dashboard" | "Live Demo" | "Model"; url: string };
+type Project = {
+  title: string;
+  description: string;
+  technologies: string[];
+  github: string;
+  featured?: boolean;
+  research?: boolean;
+  tagline?: string;
+  problem?: string;
+  approach?: string;
+  outcome?: string;
+  extraLinks?: ExtraLink[];
+};
+
+const projects: Project[] = [
   {
     title: "Agrotech (Rain Prediction Model)",
     description: "Random Forest model to forecast rainfall. Agricultural technology solution for weather prediction to help farmers make informed decisions.",
@@ -123,12 +138,168 @@ const projects = [
     technologies: ["Computer Vision", "Sports Analytics", "Video Processing", "AI"],
     github: "https://github.com/Nihal108-bi/Soccer-Player-Re-Identification-from-Single-Video-Feed",
     featured: false
-  }
+  },
+  // ---------------- NEW PROJECTS ----------------
+  {
+    title: "T2I-BiasBench: AI Fairness Auditing Framework",
+    tagline: "Research framework for auditing bias in text-to-image diffusion models.",
+    problem: "Diffusion models inherit and amplify societal biases (beauty, gender, race), but standardized fairness benchmarks for text-to-image systems are scarce.",
+    approach: "Built a reproducible fairness auditing framework evaluating 4 diffusion models across 1,574 generated images and 13 metrics — including 6 novel measures such as a Hallucination Score. Comparative dashboards visualize bias dimensions side-by-side.",
+    outcome: "Surfaced a 12× reduction in beauty bias under RLHF-aligned models; published as a research paper with public dashboard and reproducible evaluation pipeline.",
+    description: "Research framework for auditing bias in text-to-image diffusion models.",
+    technologies: ["LLMs", "Diffusion Models", "Computer Vision", "AI Fairness", "RLHF"],
+    github: "https://github.com/Nihal108-bi/T2I-BiasBench-A-Multi-Metric-Framework-for-Auditing-Demographic-and-Cultural-Bias-in-Text-to-Image-",
+    research: true,
+    extraLinks: [
+      { label: "Dashboard", url: "https://nihal108-bi.github.io/T2I-BiasBench-A-Multi-Metric-Framework-for-Auditing-Demographic-and-Cultural-Bias-in-Text-to-Image-/" },
+      { label: "Paper", url: "https://arxiv.org/abs/2604.12481" },
+    ],
+  },
+  {
+    title: "Real-Time Voice AI Agent with RAG",
+    tagline: "Sub-2s end-to-end voice assistant unifying speech, retrieval, and reasoning.",
+    problem: "Most voice assistants either lack grounding in custom knowledge or suffer from multi-second latency that breaks conversational flow.",
+    approach: "Architected a streaming pipeline combining Deepgram (STT), MongoDB Atlas Vector Search with semantic chunking, function calling, Groq LLM inference, and ElevenLabs (TTS) — orchestrated over FastAPI WebSockets and Pipecat streaming.",
+    outcome: "Delivered sub-2-second voice round-trips with grounded retrieval over technical docs; production-ready architecture.",
+    description: "Sub-2s end-to-end voice assistant unifying speech, retrieval, and reasoning.",
+    technologies: ["FastAPI", "Deepgram", "ElevenLabs", "MongoDB Atlas", "Pipecat"],
+    github: "https://github.com/Nihal108-bi/Realtime-Voice-Ai-agent-with-RAG",
+    featured: true,
+  },
+  {
+    title: "CrewAI Financial Analyst Agent",
+    tagline: "Multi-agent system for autonomous financial research and investment signaling.",
+    problem: "Manual financial research is slow, fragmented, and hard to scale across hundreds of daily market events.",
+    approach: "Built a CrewAI multi-agent pipeline processing 500+ daily market records, generating sentiment-driven investment signals. Persistence via Azure Blob Storage, reporting through PostgreSQL, visualization via Streamlit, and APIs through FastAPI.",
+    outcome: "Reduced manual research effort by 80% with end-to-end autonomous market analysis.",
+    description: "Multi-agent system for autonomous financial research and investment signaling.",
+    technologies: ["CrewAI", "FastAPI", "Azure", "PostgreSQL", "Multi-Agent"],
+    github: "https://github.com/Nihal108-bi/creawai-agent-azure",
+    featured: true,
+  },
+  {
+    title: "HR Policy RAG Chatbot",
+    tagline: "Enterprise HR knowledge assistant with grounded retrieval.",
+    problem: "HR teams spend significant time answering repeat policy questions; generic LLMs hallucinate on company-specific policies.",
+    approach: "Built with LangChain and FAISS, with refined chunking and re-ranking strategies to elevate grounding across policy corpora. Containerized with Docker and deployed on Hugging Face Spaces.",
+    outcome: "Live, low-latency policy chatbot aligned with enterprise knowledge-assistant use cases.",
+    description: "Enterprise HR knowledge assistant with grounded retrieval.",
+    technologies: ["LangChain", "FAISS", "Hugging Face", "Docker", "RAG"],
+    github: "https://github.com/Nihal108-bi/HR-Policy-RAG-Chatbot",
+    extraLinks: [
+      { label: "Live Demo", url: "https://huggingface.co/spaces/Nihal108-bi/HR-Policy-RAG-Chatbot" },
+    ],
+  },
+  {
+    title: "Whisper Hindi ASR (Fine-Tuned)",
+    tagline: "Fine-tuned multilingual speech-to-text model for noisy Hindi audio.",
+    problem: "Off-the-shelf ASR models struggle with noisy, accented Hindi audio — a major gap for Indian users.",
+    approach: "Fine-tuned OpenAI Whisper on the Hindi FLEURS dataset with a WER-driven error taxonomy. Released publicly on Hugging Face with a Gradio demo for real-time inference.",
+    outcome: "Published Hugging Face model with 44+ downloads; live Gradio Space delivering real-time Hindi speech-to-text.",
+    description: "Fine-tuned multilingual speech-to-text model for noisy Hindi audio.",
+    technologies: ["Whisper", "Hugging Face", "PyTorch", "Gradio", "ASR"],
+    github: "https://github.com/Nihal108-bi/Hindi-ASR-Whisper-Pipeline",
+    extraLinks: [
+      { label: "Model", url: "https://huggingface.co/Nihal108-bi/whisper-hindi-noisy" },
+    ],
+  },
+  {
+    title: "Network Security Phishing Detection — MLOps",
+    tagline: "Production-grade MLOps pipeline for phishing URL detection.",
+    problem: "ML models drift in production; phishing patterns evolve fast, and most projects lack monitoring or retraining discipline.",
+    approach: "Built an MLflow-tracked detection pipeline with KS-test drift monitoring across retraining cycles. CI/CD on GitHub Actions; containerized with Docker and deployed to AWS ECR/EC2 with audit-ready production discipline.",
+    outcome: "Stable inference with automated drift detection, retraining triggers, and reproducible deployments.",
+    description: "Production-grade MLOps pipeline for phishing URL detection.",
+    technologies: ["AWS", "MLflow", "Docker", "FastAPI", "MLOps"],
+    github: "https://github.com/Nihal108-bi/AI-Powered-Network-Security-Detection-Pipeline-End-to-End-MLOps-",
+  },
 ];
 
+const extraLinkIcon = (label: ExtraLink["label"]) => {
+  switch (label) {
+    case "Paper": return <FileText className="h-4 w-4 mr-1" />;
+    case "Dashboard": return <LayoutDashboard className="h-4 w-4 mr-1" />;
+    case "Live Demo": return <Play className="h-4 w-4 mr-1" />;
+    case "Model": return <Box className="h-4 w-4 mr-1" />;
+  }
+};
+
+function RichProjectCard({ project, accent = "accent" }: { project: Project; accent?: "accent" | "research" }) {
+  const borderHover = accent === "research"
+    ? "hover:border-purple-400"
+    : "hover:border-portfolio-accent";
+  const titleHover = accent === "research"
+    ? "group-hover:text-purple-400"
+    : "group-hover:text-portfolio-accent";
+
+  return (
+    <Card className={`bg-portfolio-bg border-portfolio-border ${borderHover} transition-all duration-300 hover:shadow-glow group h-full flex flex-col`}>
+      <CardHeader>
+        <div className="flex items-start justify-between gap-2">
+          <CardTitle className={`text-portfolio-text ${titleHover} transition-colors font-bold`}>
+            {project.title}
+          </CardTitle>
+          {project.research && (
+            <Badge className="bg-purple-500/15 text-purple-300 border border-purple-400/40 shrink-0">
+              Research
+            </Badge>
+          )}
+        </div>
+        {project.tagline && (
+          <p className="text-sm text-portfolio-text-muted italic mt-1">{project.tagline}</p>
+        )}
+      </CardHeader>
+      <CardContent className="flex-1 flex flex-col">
+        {project.problem && (
+          <p className="text-sm text-portfolio-text-muted mb-2 leading-relaxed">
+            <span className="font-semibold text-portfolio-text">Problem: </span>{project.problem}
+          </p>
+        )}
+        {project.approach && (
+          <p className="text-sm text-portfolio-text-muted mb-2 leading-relaxed">
+            <span className="font-semibold text-portfolio-text">Approach: </span>{project.approach}
+          </p>
+        )}
+        {project.outcome && (
+          <p className="text-sm text-portfolio-text-muted mb-4 leading-relaxed">
+            <span className="font-semibold text-portfolio-text">Outcome: </span>{project.outcome}
+          </p>
+        )}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {project.technologies.map((tech, i) => (
+            <Badge key={i} variant="secondary" className="text-xs bg-portfolio-surface border border-portfolio-border">
+              {tech}
+            </Badge>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-2 mt-auto">
+          <Button size="sm" className="bg-gradient-primary hover:shadow-glow transition-all duration-300" asChild>
+            <a href={project.github} target="_blank" rel="noopener noreferrer">
+              <Github className="h-4 w-4 mr-1" />Code
+            </a>
+          </Button>
+          <Button variant="outline" size="sm" className="border-portfolio-border hover:border-portfolio-accent" asChild>
+            <a href={project.github} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="h-4 w-4 mr-1" />View
+            </a>
+          </Button>
+          {project.extraLinks?.map((link, i) => (
+            <Button key={i} variant="outline" size="sm" className="border-portfolio-border hover:border-portfolio-accent" asChild>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                {extraLinkIcon(link.label)}{link.label}
+              </a>
+            </Button>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function Projects() {
-  const featuredProjects = projects.filter(project => project.featured);
-  const otherProjects = projects.filter(project => !project.featured);
+  const researchProjects = projects.filter(p => p.research);
+  const featuredProjects = projects.filter(p => p.featured && !p.research);
+  const otherProjects = projects.filter(p => !p.featured && !p.research);
 
   return (
     <section id="projects" className="py-20 relative">
@@ -144,6 +315,27 @@ export function Projects() {
             </p>
           </AnimatedSection>
 
+          {/* Research */}
+          {researchProjects.length > 0 && (
+            <AnimatedSection delay={0.05}>
+              <div className="mb-16">
+                <div className="flex items-center gap-3 mb-8">
+                  <h3 className="text-2xl font-bold text-portfolio-text">Research</h3>
+                  <Badge className="bg-purple-500/15 text-purple-300 border border-purple-400/40">
+                    Published
+                  </Badge>
+                </div>
+                <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                  {researchProjects.map((project, index) => (
+                    <StaggerItem key={index}>
+                      <RichProjectCard project={project} accent="research" />
+                    </StaggerItem>
+                  ))}
+                </StaggerContainer>
+              </div>
+            </AnimatedSection>
+          )}
+
           {/* Featured Projects */}
           <AnimatedSection delay={0.1}>
             <div className="mb-16">
@@ -151,52 +343,7 @@ export function Projects() {
               <StaggerContainer className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {featuredProjects.map((project, index) => (
                   <StaggerItem key={index}>
-                <Card key={index} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow group">
-                  <CardHeader>
-                    <CardTitle className="text-portfolio-text group-hover:text-portfolio-accent transition-colors">
-                      {project.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-portfolio-text-muted mb-4 leading-relaxed">
-                      {project.description}
-                    </p>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {project.technologies.map((tech, techIndex) => (
-                        <Badge 
-                          key={techIndex} 
-                          variant="secondary" 
-                          className="text-xs bg-portfolio-surface border border-portfolio-border"
-                        >
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex gap-3">
-                      <Button 
-                        size="sm" 
-                        className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
-                        asChild
-                      >
-                        <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <Github className="h-4 w-4 mr-1" />
-                          Code
-                        </a>
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="border-portfolio-border hover:border-portfolio-accent"
-                        asChild
-                      >
-                        <a href={project.github} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-4 w-4 mr-1" />
-                          View
-                        </a>
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <RichProjectCard project={project} />
                   </StaggerItem>
                 ))}
               </StaggerContainer>
@@ -214,18 +361,43 @@ export function Projects() {
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-3">
                           <h4 className="text-lg font-semibold text-portfolio-text">{project.title}</h4>
-                          <a 
-                            href={project.github} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="text-portfolio-text-muted hover:text-portfolio-accent transition-colors"
-                          >
-                            <Github className="h-5 w-5" />
-                          </a>
+                          <div className="flex items-center gap-2 shrink-0">
+                            {project.extraLinks?.map((link, i) => (
+                              <a
+                                key={i}
+                                href={link.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title={link.label}
+                                className="text-portfolio-text-muted hover:text-portfolio-accent transition-colors"
+                              >
+                                {extraLinkIcon(link.label)}
+                              </a>
+                            ))}
+                            <a
+                              href={project.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-portfolio-text-muted hover:text-portfolio-accent transition-colors"
+                            >
+                              <Github className="h-5 w-5" />
+                            </a>
+                          </div>
                         </div>
+                        {project.tagline && (
+                          <p className="text-sm text-portfolio-text-muted italic mb-2">{project.tagline}</p>
+                        )}
+                        {project.problem ? (
+                          <div className="text-sm text-portfolio-text-muted mb-3 space-y-1 leading-relaxed">
+                            <p><span className="font-semibold text-portfolio-text">Problem: </span>{project.problem}</p>
+                            <p><span className="font-semibold text-portfolio-text">Approach: </span>{project.approach}</p>
+                            <p><span className="font-semibold text-portfolio-text">Outcome: </span>{project.outcome}</p>
+                          </div>
+                        ) : (
                         <p className="text-portfolio-text-muted mb-3 text-sm leading-relaxed">
                           {project.description}
                         </p>
+                        )}
                         <div className="flex flex-wrap gap-2">
                           {project.technologies.map((tech, techIndex) => (
                             <Badge 
