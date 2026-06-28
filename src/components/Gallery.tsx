@@ -137,7 +137,7 @@ export function Gallery() {
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-            <span className="text-portfolio-accent">Gallery</span> & Highlights
+            <span className="aurora-text">Gallery</span> & Highlights
           </h2>
           <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
             A visual journey through my professional experiences, hackathon victories, 
