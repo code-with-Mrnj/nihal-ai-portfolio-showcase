@@ -11,7 +11,7 @@ export function CodingProof() {
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-              Problem Solving & <span className="text-portfolio-accent">Coding Proof</span>
+              Problem Solving & <span className="aurora-text">Coding Proof</span>
             </h2>
             <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
               Consistent practice in Data Structures, Algorithms, and Machine Learning problem solving. 

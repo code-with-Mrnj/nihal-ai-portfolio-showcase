@@ -233,7 +233,7 @@ function RichProjectCard({ project, accent = "accent" }: { project: Project; acc
     : "group-hover:text-portfolio-accent";
 
   return (
-    <Card className={`bg-portfolio-bg border-portfolio-border ${borderHover} transition-all duration-300 hover:shadow-glow group h-full flex flex-col`}>
+    <Card className={`glass-card glass-card-hover rounded-2xl group h-full flex flex-col ${accent === "research" ? "aurora-border" : ""}`}>
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <CardTitle className={`text-portfolio-text ${titleHover} transition-colors font-bold`}>
@@ -307,7 +307,7 @@ export function Projects() {
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-              My <span className="text-portfolio-accent">Portfolio</span>
+              My <span className="aurora-text">Portfolio</span>
             </h2>
             <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
               Explore my collection of AI/ML projects, from data analysis agents to computer vision applications.
@@ -357,7 +357,7 @@ export function Projects() {
               <StaggerContainer className="grid md:grid-cols-2 gap-6">
                 {otherProjects.map((project, index) => (
                   <StaggerItem key={index}>
-                    <Card className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300">
+                    <Card className="glass-card glass-card-hover rounded-2xl">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-3">
                           <h4 className="text-lg font-semibold text-portfolio-text">{project.title}</h4>

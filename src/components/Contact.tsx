@@ -156,7 +156,7 @@ export function Contact() {
       <div className="container mx-auto px-6">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-            Get In <span className="text-portfolio-accent">Touch</span>
+            Get In <span className="aurora-text">Touch</span>
           </h2>
           <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
             I'm always open to discussing new opportunities, collaborations, or just having a chat about 
@@ -172,7 +172,7 @@ export function Contact() {
               <div className="space-y-6 mb-8">
                 {contactInfo.map((info, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="w-12 h-12 bg-portfolio-accent rounded-lg flex items-center justify-center mr-4">
+                    <div className="w-12 h-12 bg-gradient-primary rounded-xl flex items-center justify-center mr-4 shadow-glow">
                       <info.icon className="h-6 w-6 text-portfolio-bg" />
                     </div>
                     <div>
@@ -197,7 +197,7 @@ export function Contact() {
                 <h4 className="text-lg font-semibold text-portfolio-text mb-4">Follow Me</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {socialLinks.map((social, index) => (
-                    <Card key={index} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow">
+                    <Card key={index} className="glass-card glass-card-hover rounded-xl">
                       <CardContent className="p-3">
                         <a 
                           href={social.href} 
@@ -217,7 +217,7 @@ export function Contact() {
                     </Card>
                   ))}
                   {customSocialLinks.map((social, index) => (
-                    <Card key={`custom-${index}`} className="bg-portfolio-bg border-portfolio-border hover:border-portfolio-accent transition-all duration-300 hover:shadow-glow">
+                    <Card key={`custom-${index}`} className="glass-card glass-card-hover rounded-xl">
                       <CardContent className="p-3">
                         <a 
                           href={social.href} 
@@ -240,7 +240,7 @@ export function Contact() {
               </div>
 
               {/* Call to Action */}
-              <div className="mt-8 p-6 bg-portfolio-bg border border-portfolio-border rounded-xl">
+              <div className="mt-8 p-6 glass-card rounded-2xl">
                 <h4 className="text-lg font-semibold text-portfolio-text mb-2">Ready to collaborate?</h4>
                 <p className="text-portfolio-text-muted mb-4">
                   Whether you have a project in mind, want to discuss AI/ML solutions, or just want to connect, 
@@ -260,7 +260,7 @@ export function Contact() {
 
             {/* Contact Form */}
             <div>
-              <Card className="bg-portfolio-bg border-portfolio-border">
+              <Card className="glass-card rounded-2xl">
                 <CardContent className="p-8">
                   <h3 className="text-2xl font-bold text-portfolio-text mb-6">Send a Message</h3>
                   <form onSubmit={handleSubmit} className="space-y-6">

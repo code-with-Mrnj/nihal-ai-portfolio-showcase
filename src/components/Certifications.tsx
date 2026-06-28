@@ -53,7 +53,7 @@ export function Certifications() {
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-              <span className="text-portfolio-accent">Certifications</span> & Learning
+              <span className="aurora-text">Certifications</span> & Learning
             </h2>
             <p className="text-lg text-portfolio-text-muted text-center mb-12 max-w-3xl mx-auto">
               Continuous learning and professional development through industry-recognized certifications 

@@ -47,7 +47,7 @@ export function Sidebar({ activeSection }: SidebarProps) {
 
       {/* Sidebar */}
       <aside className={`
-        fixed left-0 top-0 z-40 h-full w-64 bg-portfolio-surface border-r border-portfolio-border
+        fixed left-0 top-0 z-40 h-full w-64 glass-card border-r border-portfolio-border
         transform transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         md:translate-x-0
@@ -55,7 +55,7 @@ export function Sidebar({ activeSection }: SidebarProps) {
         <div className="flex flex-col h-full p-6">
           {/* Logo/Name */}
           <div className="mb-12 mt-8 md:mt-0">
-            <h1 className="text-2xl font-bold text-portfolio-accent">NIHAL</h1>
+            <h1 className="text-2xl font-bold aurora-text tracking-widest">NIHAL</h1>
           </div>
 
           {/* Navigation */}
@@ -66,10 +66,10 @@ export function Sidebar({ activeSection }: SidebarProps) {
                   <button
                     onClick={() => handleNavClick(item.href)}
                     className={`
-                      w-full flex items-center px-3 py-3 text-left rounded-lg transition-colors
+                      w-full flex items-center px-3 py-3 text-left rounded-xl transition-all duration-300
                       ${activeSection === item.href.slice(1) 
-                        ? 'bg-portfolio-accent text-portfolio-bg font-medium' 
-                        : 'text-portfolio-text-muted hover:text-portfolio-text hover:bg-portfolio-bg'
+                        ? 'bg-gradient-primary text-portfolio-bg font-semibold shadow-glow' 
+                        : 'text-portfolio-text-muted hover:text-portfolio-text hover:bg-white/5'
                       }
                     `}
                   >

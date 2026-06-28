@@ -27,7 +27,7 @@ export function About() {
         <div className="max-w-6xl mx-auto">
           <AnimatedSection>
             <h2 className="text-4xl md:text-5xl font-bold text-portfolio-text mb-4 text-center">
-              About <span className="text-portfolio-accent">Me</span>
+              About <span className="aurora-text">Me</span>
             </h2>
           </AnimatedSection>
           
@@ -55,8 +55,9 @@ export function About() {
             <AnimatedSection delay={0.2}>
               <div className="flex justify-center md:justify-end">
                 <div className="relative">
-                  <img src={nihalProfile} alt="Nihal Jaiswal" className="w-80 h-96 rounded-2xl object-cover border border-portfolio-border shadow-card" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/20 to-transparent rounded-2xl"></div>
+                  <div className="absolute -inset-3 rounded-3xl bg-gradient-aurora opacity-30 blur-2xl" />
+                  <img src={nihalProfile} alt="Nihal Jaiswal" className="relative w-80 h-96 rounded-3xl object-cover border border-portfolio-border shadow-card" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-portfolio-bg/30 to-transparent rounded-3xl"></div>
                 </div>
               </div>
             </AnimatedSection>
@@ -68,7 +69,7 @@ export function About() {
               
               <StaggerContainer className="flex flex-wrap gap-3">
                 {skills.map((skill, index) => <StaggerItem key={index}>
-                    <Badge variant="secondary" className="text-sm py-1 px-3">{skill}</Badge>
+                    <Badge variant="secondary" className="text-sm py-1.5 px-3 rounded-full glass-card border-white/10 hover:border-primary/50 transition-colors">{skill}</Badge>
                   </StaggerItem>)}
               </StaggerContainer>
             </div>
@@ -80,7 +81,7 @@ export function About() {
               <h3 className="text-2xl font-bold text-portfolio-text mb-6">Education</h3>
               <StaggerContainer className="space-y-6">
                 {education.map((edu, index) => <StaggerItem key={index}>
-                    <Card className="bg-portfolio-surface border-portfolio-border hover:border-portfolio-accent transition-colors">
+                    <Card className="glass-card glass-card-hover border-portfolio-border rounded-2xl">
                       <CardContent className="p-6">
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-2">
                           <h4 className="text-lg font-semibold text-portfolio-text">{edu.institution}</h4>

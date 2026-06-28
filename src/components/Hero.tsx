@@ -100,7 +100,7 @@ export function Hero() {
           delay: 0.2
         }} className="text-4xl md:text-6xl lg:text-7xl font-bold text-portfolio-text mb-4 drop-shadow-lg">
             Hi, I'm{" "}
-            <span className="text-portfolio-accent">Nihal Jaiswal</span>
+            <span className="aurora-text">Nihal Jaiswal</span>
           </motion.h1>
 
           {/* Role with Typewriter */}
